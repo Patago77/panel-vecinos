@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Espinillo Golf Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--olive:#5c6b45;--olive-dk:#3d4a2e;--olive-md:#7a8f5f;--olive-lt:#e8eddf;--olive-xs:#f4f6f0;--corn:#d4a843;--corn-lt:#fdf3db;--corn-dk:#a07c28;--white:#fff;--off:#fafaf8;--ink:#1c1f18;--ink-2:#4a4f40;--ink-3:#8a9080;--rule:#dde3d4;--red-soft:#c0392b;--red-lt:#fdecea;--sw:240px;--hh:60px;--ease:.22s cubic-bezier(.4,0,.2,1)}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+svg{display:inline-block;vertical-align:middle}
+button,input,select,textarea{font-family:inherit}
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:rgba(250,250,248,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:200}
+.hdr-toggle{width:36px;height:36px;border-radius:8px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-2);transition:background var(--ease)}
+.hdr-toggle:hover{background:var(--olive-lt)}
+.hdr-wordmark{font-family:'DM Serif Display',serif;font-size:18px;color:var(--olive-dk);background:none;border:none;cursor:pointer;letter-spacing:-.2px}
+.hdr-wordmark em{font-style:italic;color:var(--olive-md)}
+.hdr-space{flex:1}
+.hdr-lote{font-size:12px;font-weight:500;color:var(--ink-3);background:var(--olive-xs);border:1px solid var(--rule);border-radius:20px;padding:4px 12px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.hdr-pill{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--olive);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;cursor:pointer;border:2px solid var(--olive-md)}
+.layout{display:flex;margin-top:var(--hh);min-height:calc(100vh - var(--hh))}
+.overlay{display:none;position:fixed;inset:0;background:rgba(28,31,24,.35);backdrop-filter:blur(2px);z-index:150}
+.overlay.on{display:block}
+.sidebar{position:fixed;top:var(--hh);left:0;bottom:0;width:var(--sw);background:var(--white);border-right:1px solid var(--rule);display:flex;flex-direction:column;overflow-y:auto;z-index:160;transition:transform var(--ease);padding:0 0 24px}
+.sidebar.on{transform:translateX(0)!important;box-shadow:0 0 40px rgba(0,0,0,.15)}
+.ng{padding:24px 0 4px}
+.ng-label{font-size:10px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);padding:0 24px;margin-bottom:4px;display:block}
+.nl{display:flex;align-items:center;gap:12px;padding:9px 20px 9px 24px;font-size:13.5px;font-weight:400;color:var(--ink-2);cursor:pointer;border-left:2px solid transparent;transition:all var(--ease);border-top:none;border-right:none;border-bottom:none;background:none;width:100%;text-align:left}
+.nl:hover{color:var(--olive-dk);background:var(--olive-xs)}
+.nl.on{color:var(--olive-dk);font-weight:500;border-left-color:var(--olive);background:var(--olive-xs)}
+.nbadge{margin-left:auto;background:var(--corn);color:var(--ink);font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:17px;text-align:center;line-height:1.5}
+.nsep{height:1px;background:var(--rule);margin:12px 20px}
+.nfoot{flex:1;min-height:24px}
+.logout-btn{margin:0 20px;display:flex;align-items:center;gap:10px;padding:9px 14px;border:1px solid var(--rule);border-radius:8px;background:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--red-soft);transition:background var(--ease)}
+.logout-btn:hover{background:var(--red-lt)}
+.main{margin-left:var(--sw);flex:1;min-width:0;padding:40px 48px 60px;background:var(--white)}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:20px;gap:20px;flex-wrap:wrap}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:var(--olive-md);margin-bottom:8px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:40px;line-height:1.1;letter-spacing:-.5px;color:var(--ink)}
+.hero-title em{font-style:italic;color:var(--olive-md)}
+.hero-sub{margin-top:6px;font-size:14px;color:var(--ink-3);font-weight:300}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.pill-olive{background:var(--olive-lt);color:var(--olive-dk)}
+.pill-corn{background:var(--corn-lt);color:var(--corn-dk)}
+.sec{font-size:10.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px}
+.qa-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:48px}
+.qa-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all var(--ease);background:none}
+.qa-primary{background:var(--olive);color:#fff;border-color:var(--olive)}
+.qa-primary:hover{background:var(--olive-dk)}
+.qa-ghost{background:var(--white);color:var(--ink-2);border-color:var(--rule)}
+.qa-ghost:hover{background:var(--olive-xs);border-color:var(--olive-md);color:var(--olive-dk)}
+.qa-corn{background:var(--corn-lt);color:var(--corn-dk);border-color:#e8d090}
+.qa-corn:hover{background:var(--corn);color:#fff}
+.col-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:0 56px;margin-bottom:52px}
+.col-title{font-family:'Outfit',sans-serif;font-size:20px;font-weight:500;letter-spacing:-.4px;color:var(--ink);margin-bottom:6px;line-height:1.25}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500}
+.status-dot{width:6px;height:6px;border-radius:50%}
+.s-green .status-dot{background:var(--olive)}.s-green{color:var(--olive-dk)}
+.s-corn .status-dot{background:var(--corn)}.s-corn{color:var(--corn-dk)}
+.heading-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;gap:16px}
+.rule-link{font-size:13.5px;color:var(--olive);font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:color var(--ease);background:none;border:none;cursor:pointer}
+.rule-link:hover{color:var(--olive-dk)}
+.notice-item{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.notice-item:first-of-type{border-top:1px solid var(--rule)}
+.notice-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.nd-olive{background:var(--olive)}.nd-corn{background:var(--corn)}
+.notice-body{flex:1}
+.notice-title{font-size:13.5px;font-weight:500;color:var(--ink);line-height:1.4;margin-bottom:3px}
+.notice-desc{font-size:12.5px;color:var(--ink-3);line-height:1.55;font-weight:300}
+.notice-meta{margin-top:6px}
+.notice-tag{font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.3px}
+.notice-action{font-size:13.5px;font-weight:500;color:var(--olive);display:inline-flex;align-items:center;gap:5px;flex-shrink:0;border:1px solid var(--olive-md);border-radius:20px;padding:4px 12px;background:var(--olive-xs);cursor:pointer;transition:all var(--ease)}
+.prow{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--rule);gap:12px}
+.prow:first-of-type{border-top:1px solid var(--rule)}
+.prow-key{font-size:12px;color:var(--ink-3);font-weight:400;display:flex;align-items:center;gap:8px}
+.prow-val{font-size:13px;font-weight:500;color:var(--ink)}
+.visit-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--rule)}
+.visit-row:first-of-type{border-top:1px solid var(--rule)}
+.v-initials{width:32px;height:32px;border-radius:50%;background:var(--olive-lt);color:var(--olive-dk);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.v-name{font-size:13.5px;font-weight:500;color:var(--ink)}
+.v-role{font-size:12px;color:var(--ink-3)}
+.v-space{flex:1}
+.v-date{font-size:12px;color:var(--ink-3);text-align:right;line-height:1.6}
+.ilum-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.ilum-row:first-of-type{border-top:1px solid var(--rule)}
+.ilum-name{font-size:13.5px;font-weight:400;color:var(--ink);flex:1}
+.add-row{padding:12px 0;border-bottom:1px solid var(--rule)}
+.add-link{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--olive);border:none;background:none;cursor:pointer;transition:color var(--ease)}
+.footer-strip{display:flex;align-items:center;padding:20px 0 0;border-top:1px solid var(--rule);margin-top:52px;flex-wrap:wrap;gap:10px 24px}
+.footer-strip span{font-size:12px;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:12.5px;font-weight:500;white-space:nowrap}
+.chip-olive{background:var(--olive-lt);color:var(--olive-dk)}
+.chip-corn{background:var(--corn-lt);color:var(--corn-dk)}
+.chip-red{background:var(--red-lt);color:var(--red-soft)}
+.chip-gray{background:var(--off);color:var(--ink-3);border:1px solid var(--rule)}
+.ftabs{display:flex;border-bottom:1px solid var(--rule)}
+.ftab{padding:10px 0;margin-right:28px;font-size:13.5px;font-weight:400;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;transition:all var(--ease)}
+.ftab:hover{color:var(--ink-2)}
+.ftab.on{color:var(--olive-dk);font-weight:500;border-bottom-color:var(--olive)}
+.sum-strip{display:flex;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-bottom:28px}
+.sum-item{flex:1;padding:18px 0;border-right:1px solid var(--rule)}
+.sum-item:last-child{border-right:none}
+.sum-item:not(:first-child){padding-left:28px}
+.sum-num{font-family:'DM Serif Display',serif;font-size:32px;letter-spacing:-1px;line-height:1;color:var(--ink)}
+.sum-lbl{font-size:13px;color:var(--ink-3);margin-top:3px}
+.tbl-header{display:grid;grid-template-columns:80px 90px 120px 1fr 140px;gap:0 16px;padding:10px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.tbl-col{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3)}
+.rec-row{display:grid;grid-template-columns:80px 90px 120px 1fr 140px;gap:0 16px;padding:22px 0;border-bottom:1px solid var(--rule);align-items:start}
+.rec-num{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-1px;color:var(--ink-3);line-height:1.2}
+.rec-lote{font-size:13px;font-weight:500;color:var(--ink)}
+.rec-fecha{font-size:13px;color:var(--ink-2)}
+.rec-titulo{font-size:13.5px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.4}
+.rec-detalle{font-size:13px;color:var(--ink-3);font-weight:300;line-height:1.65}
+.rec-area{font-size:12px;color:var(--ink-3);margin-top:6px}
+.vitem{display:flex;gap:24px;padding:32px 0;border-bottom:1px solid var(--rule)}
+.vitem-num{font-family:'DM Serif Display',serif;font-size:32px;letter-spacing:-2px;color:var(--rule);line-height:1;flex-shrink:0;width:48px}
+.vitem-body{flex:1}
+.vitem-aside{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
+.vitem-eyebrow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-3);margin-bottom:10px;flex-wrap:wrap}
+.vitem-title{font-family:'Outfit',sans-serif;font-size:20px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.3}
+.vitem-desc{font-size:13.5px;color:var(--ink-3);font-weight:300;line-height:1.65;margin-bottom:16px}
+.vitem-dates{display:flex;gap:20px;margin-bottom:16px;flex-wrap:wrap}
+.vdate{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3)}
+.vopt-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.vopt{padding:8px 16px;border-radius:8px;border:1px solid var(--rule);background:#fff;font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer;transition:all var(--ease)}
+.vopt:hover{border-color:var(--olive-md);color:var(--olive-dk);background:var(--olive-xs)}
+.vopt.sel{border-color:var(--olive);background:var(--olive-lt);color:var(--olive-dk)}
+.cand-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.cand{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--rule);border-radius:8px;cursor:pointer;transition:all var(--ease);background:#fff;font-size:13px;color:var(--ink-2);font-weight:500}
+.cand:hover{border-color:var(--olive-md);background:var(--olive-xs)}
+.cand.sel{border-color:var(--olive);background:var(--olive-lt);color:var(--olive-dk)}
+.cand-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.vitem-actions{display:flex;align-items:center;gap:16px;margin-top:10px;flex-wrap:wrap}
+.btn-vote{padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:7px;transition:all var(--ease)}
+.bv-primary{background:var(--olive);color:#fff}.bv-primary:hover{background:var(--olive-dk)}
+.bv-disabled{background:var(--rule);color:var(--ink-3);cursor:not-allowed}
+.vitem-status-badge{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}
+.vsb-active{background:var(--olive-lt);color:var(--olive-dk)}
+.vsb-upcoming{background:var(--corn-lt);color:var(--corn-dk)}
+.vsb-closed{background:var(--off);color:var(--ink-3);border:1px solid var(--rule)}
+.vitem-deadline{font-size:12.5px;color:var(--ink-3);text-align:right}
+.vitem-voted-badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--olive-dk);background:var(--olive-lt);border-radius:8px;padding:6px 12px}
+.result-bar{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.result-row{display:flex;align-items:center;gap:12px}
+.result-label{font-size:13px;color:var(--ink-2);width:110px;flex-shrink:0}
+.result-track{flex:1;height:6px;background:var(--olive-xs);border-radius:3px;overflow:hidden}
+.result-fill{height:100%;border-radius:3px}
+.rf-olive{background:var(--olive)}.rf-corn{background:var(--corn)}.rf-rule{background:var(--rule)}
+.result-pct{font-size:12.5px;font-weight:500;color:var(--ink-3);width:34px;text-align:right}
+.form-panel{background:var(--olive-xs);border:1px solid var(--rule);border-radius:12px;padding:28px;margin-bottom:32px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px;margin-bottom:20px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.span2{grid-column:span 2}
+.field-label{font-size:12px;font-weight:500;color:var(--ink-3);letter-spacing:.3px;text-transform:uppercase}
+.field input,.field select,.field textarea{padding:9px 12px;border:1px solid var(--rule);border-radius:8px;background:#fff;font-size:13.5px;color:var(--ink);transition:border-color var(--ease);outline:none;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--olive)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all var(--ease)}
+.btn-primary{background:var(--olive);color:#fff}.btn-primary:hover{background:var(--olive-dk)}
+.btn-ghost{background:none;color:var(--ink-2);border:1px solid var(--rule)}.btn-ghost:hover{background:var(--olive-xs);border-color:var(--olive-md)}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:24px}
+.cat-btn{padding:14px 12px;border:1px solid var(--rule);border-radius:10px;background:#fff;text-align:center;cursor:pointer;transition:all var(--ease);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.cat-btn:hover{border-color:var(--olive-md);background:var(--olive-xs);color:var(--olive-dk)}
+.cat-btn.sel{border-color:var(--olive);background:var(--olive-lt);color:var(--olive-dk)}
+.perfil-avatar-big{width:80px;height:80px;border-radius:50%;background:var(--olive);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:28px;border:3px solid var(--olive-md);flex-shrink:0}
+.vrow{display:grid;grid-template-columns:44px 1fr 160px 120px 80px;gap:0 16px;padding:16px 0;border-bottom:1px solid var(--rule);align-items:center}
+.v-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--olive-dk);color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px;z-index:999;animation:toastIn .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.2);max-width:340px}
+.toast.err{background:var(--red-soft)}
+.loading{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--ink-3);font-size:14px;gap:10px}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade{animation:fadeUp .4s ease both}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0;padding:24px 20px 48px}.hero-title{font-size:30px}.col-layout{grid-template-columns:1fr;gap:40px}.tbl-header{display:none}.rec-row{grid-template-columns:1fr;gap:6px}.vrow{grid-template-columns:44px 1fr}.form-grid{grid-template-columns:1fr}.field.span2{grid-column:span 1}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <button class="hdr-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+  <button class="hdr-wordmark" onclick="nav('inicio')">El Espinillo <em>Golf Club</em></button>
+  <div class="hdr-space"></div>
+  <div class="hdr-lote"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Lote <span id="hdr-lote">42</span></div>
+  <div class="hdr-pill"><span id="hdr-nombre">Cargando...</span><div class="avatar" id="hdr-avatar" onclick="nav('perfil')">--</div></div>
+</header>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="ng">
+    <span class="ng-label">Panel</span>
+    <button class="nl" id="nl-inicio" onclick="nav('inicio')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Inicio</button>
+    <button class="nl" id="nl-perfil" onclick="nav('perfil')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Mi Perfil</button>
+  </div>
+  <div class="nsep"></div>
+  <div class="ng">
+    <span class="ng-label">Comunidad</span>
+    <button class="nl" id="nl-agenda" onclick="nav('agenda')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda</button>
+    <button class="nl" id="nl-marketplace" onclick="nav('marketplace')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M3 9h18v11a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/></svg>Marketplace <span class="nbadge">3</span></button>
+    <button class="nl" id="nl-servicios" onclick="nav('servicios')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Servicios</button>
+  </div>
+  <div class="nsep"></div>
+  <div class="ng">
+    <span class="ng-label">Administración</span>
+    <button class="nl" id="nl-nuevo-reclamo" onclick="nav('nuevo-reclamo')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Enviar Reclamo</button>
+    <button class="nl" id="nl-reclamos" onclick="nav('reclamos')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Seguimiento</button>
+  </div>
+  <div class="nsep"></div>
+  <div class="ng">
+    <span class="ng-label">Votación</span>
+    <button class="nl" id="nl-votaciones" onclick="nav('votaciones')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Votaciones Activas <span class="nbadge" id="badge-votaciones">1</span></button>
+  </div>
+  <div class="nfoot"></div>
+  <button class="logout-btn" onclick="localStorage.removeItem('vecino');window.location.href='/login.html'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Cerrar sesión</button>
+</aside>
+<main class="main" id="main"><div class="loading">Cargando panel...</div></main>
+</div>
+<script>
+const API='http://localhost:3000/api';
+let usuario={};
+let currentPage='inicio';
+const selOpts={};
+const selCands={};
+async function get(u){const r=await fetch(API+u);return r.json()}
+async function post(u,b){const r=await fetch(API+u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return r.json()}
+async function put(u,b){const r=await fetch(API+u,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return r.json()}
+function toast(msg,err){const t=document.createElement('div');t.className='toast'+(err?' err':'');t.innerHTML=(err?'✕':' ✓')+' '+msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200)}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('on');document.getElementById('overlay').classList.toggle('on')}
+function nav(page){currentPage=page;document.querySelectorAll('.nl').forEach(el=>el.classList.remove('on'));const el=document.getElementById('nl-'+page);if(el)el.classList.add('on');if(window.innerWidth<768){document.getElementById('sidebar').classList.remove('on');document.getElementById('overlay').classList.remove('on')}render()}
+async function cargarUsuario(){
+  const v=window._vecino;
+  if(v){
+    usuario={nombre:v.nombre+' '+v.apellido,lote:v.lote,email:v.email||'',telefono:v.telefono||''};
+    document.getElementById('hdr-nombre').textContent=v.nombre+' '+v.apellido;
+    document.getElementById('hdr-lote').textContent=v.lote;
+    document.getElementById('hdr-avatar').textContent=(v.nombre[0]||'')+(v.apellido[0]||'');
+    return;
+  }
+  usuario=await get('/usuario');
+  document.getElementById('hdr-nombre').textContent=usuario.nombre;
+  document.getElementById('hdr-lote').textContent=usuario.lote;
+  document.getElementById('hdr-avatar').textContent=usuario.nombre.split(' ').slice(0,2).map(n=>n[0]).join('');
+}
+function footer(){return`<div class="footer-strip"><span>Mi Comunidad · Lote ${usuario.lote||'42'}</span><span>·</span><span>Período Marzo 2026</span><span>·</span><span style="color:var(--olive-md)">Socio activo</span></div>`}
+async function pageInicio(){
+  const[reclamos,visitas]=await Promise.all([get('/reclamos'),get('/visitas')]);
+  const mis=reclamos.filter(r=>r.lote===usuario.lote&&r.estado!=='Resuelto');
+  const enc=reclamos.filter(r=>r.estado==='En curso').length;
+  const res=reclamos.filter(r=>r.estado==='Resuelto').length;
+  const pv=visitas.filter(v=>v.estado==='proximas').slice(0,2);
+  const il=[{zona:'Calle Principal',ok:true},{zona:'Sendero Este',ok:false},{zona:'Acceso Norte',ok:true},{zona:'Plaza Central',ok:true}];
+  const nov=[{tipo:'corn',titulo:'Votación activa — Presupuesto anual 2026',desc:'La consulta está abierta hasta el 20 de marzo. Tu voto define el rumbo del barrio.',tag:'Votación · Vence en 4 días',accion:'Votar',pagina:'votaciones'},{tipo:'olive',titulo:'Reunión de consorcio — 25 de marzo',desc:'Asamblea ordinaria a las 19:00 hs en el SUM.',tag:'Agenda · 25 mar',accion:'Confirmar asistencia'}];
+  return`<div class="hero fade"><div><div class="hero-eyebrow">Lunes 16 de marzo, 2026</div><h1 class="hero-title">Hola, <em>${usuario.nombre?usuario.nombre.split(' ')[0]:''}.</em></h1><p class="hero-sub">Todo en orden en tu barrio hoy.</p></div><div class="hero-meta"><span class="pill pill-olive">Socio Activo</span><span class="pill pill-corn">Expensas al día</span><span class="pill pill-olive">Período Marzo 2026</span></div></div>
+<div style="padding:16px 0 20px;border-bottom:1px solid var(--rule);margin-bottom:28px" class="fade"><div class="sec">Reclamos</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 56px"><div><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px"><span style="font-family:'DM Serif Display',serif;font-size:40px;letter-spacing:-2px;color:var(--ink);line-height:1">${mis.length}</span><span style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:500">Mis reclamos activos</span></div><div style="margin-bottom:14px"><span class="status s-green"><span class="status-dot"></span>Sin pendientes</span></div><button class="add-link" onclick="nav('reclamos')">Ver mis reclamos</button></div><div style="border-left:1px solid var(--rule);padding-left:56px"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px"><span style="font-family:'DM Serif Display',serif;font-size:40px;letter-spacing:-2px;color:var(--ink);line-height:1">${reclamos.length}</span><span style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:500">En el barrio</span></div><div style="display:flex;gap:12px;margin-bottom:14px"><span class="status s-corn"><span class="status-dot"></span>${enc} en curso</span><span class="status s-green"><span class="status-dot"></span>${res} resueltos</span></div><button class="add-link" onclick="nav('reclamos')">Ver todos los reclamos</button></div></div></div>
+<div style="margin-bottom:48px" class="fade"><div class="sec">Acciones rápidas</div><div class="qa-strip"><button class="qa-btn qa-primary" onclick="nav('nuevo-reclamo')">Nuevo reclamo</button><button class="qa-btn qa-ghost" onclick="nav('visitas')">Autorizar visita</button><button class="qa-btn qa-corn" onclick="nav('votaciones')">Votar ahora</button></div></div>
+<div class="col-layout fade"><div><div class="heading-row"><div><div class="sec">Novedades y avisos</div><h2 class="col-title">Lo que está pasando<br>en el barrio</h2></div><button class="rule-link">Ver todos</button></div>${nov.map(n=>`<div class="notice-item"><div class="notice-dot nd-${n.tipo}"></div><div class="notice-body"><div class="notice-title">${n.titulo}</div><div class="notice-desc">${n.desc}</div><div class="notice-meta"><span class="notice-tag">${n.tag||''}</span></div></div><button class="notice-action" onclick="${n.pagina?`nav('${n.pagina}')`:''}">${n.accion}</button></div>`).join('')}<div class="add-row"><button class="add-link">Ver todos los avisos</button></div></div>
+<div><div class="sec" style="margin-bottom:16px">Mi cuenta</div><div style="display:flex;align-items:center;gap:16px;padding-bottom:24px"><div style="width:56px;height:56px;border-radius:50%;background:var(--olive);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;flex-shrink:0">${usuario.nombre?usuario.nombre.split(' ').slice(0,2).map(n=>n[0]).join(''):'--'}</div><div><div style="font-family:'DM Serif Display',serif;font-size:44px;line-height:1;letter-spacing:-2px;color:var(--ink)">${usuario.lote}</div><div style="font-size:13px;color:var(--ink-3)">Lote / Unidad Funcional</div></div></div><div class="profile-strip"><div class="prow"><span class="prow-key">Nombre</span><span class="prow-val">${usuario.nombre}</span></div><div class="prow"><span class="prow-key">Estado</span><span class="status s-green"><span class="status-dot"></span>Activo</span></div><div class="prow"><span class="prow-key">Expensas</span><span class="status s-green"><span class="status-dot"></span>Al día</span></div><div class="prow"><span class="prow-key">Correo</span><span class="prow-val" style="font-size:12px">${usuario.email}</span></div><div class="prow"><span class="prow-key">Teléfono</span><span class="prow-val">${usuario.telefono}</span></div></div><div style="margin-top:16px"><button class="qa-btn qa-ghost" style="font-size:12.5px;padding:8px 14px" onclick="nav('perfil')">Editar mis datos</button></div></div></div>
+<div class="col-layout fade"><div><div class="heading-row"><div><div class="sec">Visitas autorizadas</div><h2 class="col-title">Próximos accesos</h2></div><button class="rule-link" onclick="nav('visitas')">Gestionar</button></div>${pv.map(v=>`<div class="visit-row"><div class="v-initials" style="${v.color==='corn'?'background:var(--corn-lt);color:var(--corn-dk)':''}">${v.initials}</div><div><div class="v-name">${v.nombre}</div><div class="v-role">${v.rel}</div></div><div class="v-space"></div><div class="v-date">${v.fecha}<br>${v.hora}</div></div>`).join('')}<div class="add-row"><button class="add-link" onclick="nav('visitas')">Agregar visita</button></div></div>
+<div><div class="sec" style="margin-bottom:16px">Iluminación activa</div><h2 class="col-title" style="margin-bottom:20px">Estado<br>del barrio</h2>${il.map(i=>`<div class="ilum-row"><span style="color:${i.ok?'var(--olive)':'var(--corn)'}">${i.ok?'✓':'!'}</span><span class="ilum-name">${i.zona}</span><span class="status ${i.ok?'s-green':'s-corn'}"><span class="status-dot"></span>${i.ok?'Operativa':'En revisión'}</span></div>`).join('')}<div class="add-row"><button class="add-link" onclick="nav('nuevo-reclamo')">Ver mapa completo</button></div></div></div>
+${footer()}`;
+}
+async function pageReclamos(){
+  const reclamos=await get('/reclamos');
+  const enc=reclamos.filter(r=>r.estado==='En curso').length;
+  const res=reclamos.filter(r=>r.estado==='Resuelto').length;
+  return`<div class="hero fade"><div><div class="hero-eyebrow">Administración</div><h1 class="hero-title">Reclamos <em>del barrio.</em></h1><p class="hero-sub">Seguimiento de todos los reclamos.</p></div><button class="btn btn-primary" onclick="nav('nuevo-reclamo')">Nuevo reclamo</button></div>
+<div class="sum-strip fade"><div class="sum-item"><div class="sum-num">${reclamos.length}</div><div class="sum-lbl">Total</div></div><div class="sum-item"><div class="sum-num">${enc}</div><div class="sum-lbl">En curso</div></div><div class="sum-item"><div class="sum-num">${res}</div><div class="sum-lbl">Resueltos</div></div><div class="sum-item"><div class="sum-num">${reclamos.filter(r=>r.lote===usuario.lote).length}</div><div class="sum-lbl">Mis reclamos</div></div></div>
+<div class="ftabs fade" id="rec-tabs">${[['todos','Todos'],['mis','Mis reclamos'],['en-curso','En curso'],['resueltos','Resueltos']].map(([k,l],i)=>`<button class="ftab${i===0?' on':''}" onclick="filterRec(this,'${k}')">${l}</button>`).join('')}</div>
+<div class="tbl-header fade"><span class="tbl-col">#</span><span class="tbl-col">Lote</span><span class="tbl-col">Fecha</span><span class="tbl-col">Reclamo</span><span class="tbl-col">Estado</span></div>
+<div id="rec-list" class="fade">${reclamos.map(r=>`<div class="rec-row" data-lote="${r.lote}" data-estado="${r.estado}"><div class="rec-num">#${String(r.id).padStart(3,'0')}</div><div><div class="rec-lote">Lote ${r.lote}</div></div><div><div class="rec-fecha">${r.fecha}</div><div style="font-size:12px;color:var(--ink-3)">${r.hora}</div></div><div><div class="rec-titulo">${r.titulo}</div><div class="rec-detalle">${r.detalle}</div><div class="rec-area">${r.area}</div></div><div><span class="chip ${r.estado==='En curso'?'chip-corn':r.estado==='Resuelto'?'chip-olive':'chip-gray'}">${r.estado}</span></div></div>`).join('')}</div>
+${footer()}`;
+}
+let selectedCat='';
+function pageNuevoReclamo(){
+  selectedCat='';
+  const cats=[['Iluminación'],['Infraestructura'],['Accesos'],['Espacios comunes'],['Ruidos'],['Seguridad'],['Otro']];
+  return`<div class="hero fade"><div><div class="hero-eyebrow">Administración</div><h1 class="hero-title">Nuevo <em>reclamo.</em></h1><p class="hero-sub">Informá un problema al consorcio.</p></div></div>
+<div class="fade" style="margin-bottom:32px"><div class="sec">Categoría</div><div class="cat-grid">${cats.map(([c])=>`<button class="cat-btn" id="cat-${c}" onclick="selCat('${c}')"><span>${c}</span></button>`).join('')}</div></div>
+<div class="form-panel fade"><div style="margin-bottom:24px"><div class="sec" style="margin-bottom:4px">Detalle del reclamo</div><h2 class="col-title">Completá los datos</h2></div>
+<div class="form-grid"><div class="field span2"><label class="field-label">Título del reclamo</label><input type="text" id="r-titulo" placeholder="Describí brevemente el problema..."></div><div class="field span2"><label class="field-label">Descripción detallada</label><textarea id="r-detalle" rows="4" placeholder="Explicá con más detalle..."></textarea></div><div class="field"><label class="field-label">Urgencia</label><select id="r-urgencia"><option>Baja</option><option selected>Normal</option><option>Alta</option><option>Urgente</option></select></div></div>
+<div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)"><button class="btn btn-primary" onclick="enviarReclamo()">Enviar reclamo</button><button class="btn btn-ghost" onclick="nav('reclamos')">Cancelar</button></div></div>`;
+}
+function selCat(c){selectedCat=c;document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('sel'));const el=document.getElementById('cat-'+c);if(el)el.classList.add('sel')}
+async function enviarReclamo(){
+  const titulo=document.getElementById('r-titulo')?.value||'';
+  if(!selectedCat||!titulo){toast('Completá la categoría y el título.',true);return}
+  const detalle=document.getElementById('r-detalle')?.value||'';
+  const urgencia=document.getElementById('r-urgencia')?.value||'Normal';
+  const res=await post('/reclamos',{lote:usuario.lote,titulo,detalle,area:selectedCat,urgencia});
+  if(res.ok){toast('Reclamo enviado correctamente ✓');nav('reclamos')}
+  else{toast('Error al enviar el reclamo.',true)}
+}
+async function pageVisitas(){
+  const visitas=await get('/visitas');
+  const prox=visitas.filter(v=>v.estado==='proximas');
+  const pas=visitas.filter(v=>v.estado==='pasadas');
+  return`<div class="hero fade"><div><div class="hero-eyebrow">Comunidad</div><h1 class="hero-title">Visitas <em>autorizadas.</em></h1><p class="hero-sub">Gestioná los accesos al lote.</p></div><button class="btn btn-primary" onclick="toggleVisitForm()">Autorizar visita</button></div>
+<div class="sum-strip fade"><div class="sum-item"><div class="sum-num">${prox.length}</div><div class="sum-lbl">Próximas</div></div><div class="sum-item"><div class="sum-num">0</div><div class="sum-lbl">Hoy</div></div><div class="sum-item"><div class="sum-num">${pas.length}</div><div class="sum-lbl">Pasadas</div></div></div>
+<div id="visit-form" style="display:none" class="form-panel"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px"><div><div class="sec" style="margin-bottom:4px">Nueva autorización</div><h2 class="col-title">Datos de la visita</h2></div><button onclick="toggleVisitForm()" style="border:none;background:none;cursor:pointer;color:var(--ink-3);font-size:20px">✕</button></div>
+<div class="form-grid"><div class="field"><label class="field-label">Nombre completo</label><input type="text" id="vf-nombre" placeholder="Nombre y apellido"></div><div class="field"><label class="field-label">Relación</label><select id="vf-rel"><option value="">Seleccioná...</option><option>Familiar</option><option>Amigo/a</option><option>Proveedor / Servicio</option><option>Empleado/a</option><option>Delivery</option><option>Otro</option></select></div><div class="field"><label class="field-label">DNI</label><input type="text" id="vf-dni" placeholder="Número de documento"></div><div class="field"><label class="field-label">Teléfono</label><input type="tel" id="vf-tel" placeholder="+54 11 ..."></div><div class="field"><label class="field-label">Fecha</label><input type="date" id="vf-fecha"></div><div class="field"><label class="field-label">Hora</label><input type="time" id="vf-hora"></div><div class="field"><label class="field-label">Tipo de acceso</label><select id="vf-tipo"><option>Una vez</option><option>Día completo</option><option>Recurrente</option><option>Permanente</option></select></div></div>
+<div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)"><button class="btn btn-primary" onclick="guardarVisita()">Guardar autorización</button><button class="btn btn-ghost" onclick="toggleVisitForm()">Cancelar</button></div></div>
+<div class="ftabs fade" id="vis-tabs"><button class="ftab on" onclick="filterVis(this,'proximas')">Próximas</button><button class="ftab" onclick="filterVis(this,'pasadas')">Pasadas</button></div>
+<div style="display:grid;grid-template-columns:44px 1fr 160px 120px 80px;gap:0 16px;padding:10px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)" class="fade"><span></span>${['Visitante','Fecha y hora','Tipo','Pase'].map(c=>`<span style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3)">${c}</span>`).join('')}</div>
+<div id="vis-list" class="fade">${visitas.map(v=>`<div class="vrow" data-estado="${v.estado}"><div class="v-av" style="background:${v.color==='corn'?'var(--corn-lt)':'var(--olive-lt)'};color:${v.color==='corn'?'var(--corn-dk)':'var(--olive-dk)'}">${v.initials}</div><div><div style="font-size:13.5px;font-weight:500;color:var(--ink)">${v.nombre}</div><div style="font-size:13px;color:var(--ink-3)">${v.rel}${v.dni?' · DNI '+v.dni:''}</div></div><div><div style="font-size:13px;font-weight:500;color:var(--ink-2)">${v.fecha||'Sin fecha'}</div><div style="font-size:12.5px;color:var(--ink-3)">${v.hora||'—'}</div></div><div><span class="chip chip-${v.tipo==='Permanente'?'red':v.tipo==='Día completo'?'corn':'olive'}">${v.tipo}</span></div><div><button style="font-size:13px;font-weight:500;color:var(--olive);background:none;border:1px solid var(--rule);border-radius:6px;padding:5px 10px;cursor:pointer">Pase</button></div></div>`).join('')}</div>`;
+}
+function toggleVisitForm(){const f=document.getElementById('visit-form');f.style.display=f.style.display==='none'?'block':'none'}
+function filterVis(btn,k){document.querySelectorAll('#vis-tabs .ftab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.vrow').forEach(r=>{r.style.display=r.dataset.estado===k?'':'none'})}
+async function guardarVisita(){
+  const nombre=document.getElementById('vf-nombre')?.value||'';
+  const rel=document.getElementById('vf-rel')?.value||'';
+  if(!nombre||!rel){toast('Completá nombre y relación.',true);return}
+  const fecha=document.getElementById('vf-fecha')?.value;
+  const hora=document.getElementById('vf-hora')?.value;
+  const tipo=document.getElementById('vf-tipo')?.value||'Una vez';
+  const fechaFmt=fecha?new Date(fecha+'T12:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'}):'Sin fecha';
+  const res=await post('/visitas',{nombre,rel,dni:document.getElementById('vf-dni')?.value,telefono:document.getElementById('vf-tel')?.value,fecha:fechaFmt,hora:hora?hora+' hs':'—',tipo,lote:usuario.lote});
+  if(res.ok){toast('Visita autorizada correctamente ✓');nav('visitas')}
+  else{toast('Error al guardar la visita.',true)}
+}
+async function pageVotaciones(){
+  const votaciones=await get('/votaciones');
+  const activas=votaciones.filter(v=>v.estado==='activas').length;
+  document.getElementById('badge-votaciones').textContent=activas;
+  return`<div class="hero fade"><div><div class="hero-eyebrow">Votación</div><h1 class="hero-title">Votaciones <em>activas.</em></h1><p class="hero-sub">Participá en las decisiones de la comunidad.</p></div></div>
+<div class="sum-strip fade">${[['activas','Activas'],['proximas','Próximas'],['cerradas','Cerradas']].map(([k,l])=>`<div class="sum-item"><div class="sum-num">${votaciones.filter(v=>v.estado===k).length}</div><div class="sum-lbl">${l}</div></div>`).join('')}<div class="sum-item"><div class="sum-num">${votaciones.length}</div><div class="sum-lbl">Total período</div></div></div>
+<div class="ftabs fade" id="vot-tabs">${[['activas','Activas'],['proximas','Próximas'],['cerradas','Cerradas'],['todas','Todas']].map(([k,l],i)=>`<button class="ftab${i===0?' on':''}" onclick="filterVot(this,'${k}')">${l}</button>`).join('')}</div>
+<div id="vot-list" class="fade">${votaciones.map(v=>{
+  const opcs=v.opciones||[];const cands=v.candidatos||[];const ress=v.resultados||[];
+  return`<div class="vitem${v.estado==='cerradas'?' closed':''}" data-estado="${v.estado}" style="${v.estado==='proximas'?'opacity:.7':''}">
+<div class="vitem-num">${v.num||'--'}</div>
+<div class="vitem-body">
+<div class="vitem-eyebrow"><span class="status ${v.estado==='activas'?'s-green':v.estado==='proximas'?'s-corn':''}" style="${v.estado==='cerradas'?'color:var(--ink-3)':''}"><span class="status-dot" style="${v.estado==='cerradas'?'background:var(--ink-3)':''}"></span>${v.estado==='activas'?'Activa':v.estado==='proximas'?'Próximamente':'Cerrada'}</span><span style="color:var(--rule)">·</span><span>${v.tipo||''}</span>${v.dias_restantes?`<span style="color:var(--rule)">·</span><span style="color:var(--corn-dk);font-weight:500">Cierra en ${v.dias_restantes} días</span>`:''}</div>
+<div class="vitem-title">${v.titulo}</div>
+<div class="vitem-desc">${v.desc}</div>
+${v.abre||v.cierra?`<div class="vitem-dates">${v.abre?`<div class="vdate">Abre <strong>${v.abre}</strong></div>`:''}${v.cierra?`<div class="vdate" style="color:var(--corn-dk)">Cierra <strong>${v.cierra}</strong></div>`:''}</div>`:v.cerro?`<div class="vitem-dates"><div class="vdate">Cerró <strong>${v.cerro}</strong></div></div>`:''}
+${opcs.length&&!v.voto?`<div class="vopt-group">${opcs.map(o=>`<button class="vopt${selOpts[v.id]===o?' sel':''}" onclick="selOpt('${v.id}','${o}')">${o}</button>`).join('')}</div>`:''}
+${cands.length&&!v.voto?`<div style="margin-bottom:6px"><div style="font-size:12.5px;font-weight:500;color:var(--olive);text-transform:uppercase;margin-bottom:10px">Elegí hasta ${v.max_candidatos} candidatos</div><div class="cand-grid">${cands.map(c=>`<div class="cand${(selCands[v.id]||[]).includes(c.id)?' sel':''}" onclick="selCand('${v.id}','${c.id}',${v.max_candidatos})"><div class="cand-av" style="background:${c.c};color:#fff">${c.i}</div><span>${c.n}</span></div>`).join('')}</div></div>`:''}
+${ress.length?`<div style="margin-bottom:16px"><div style="font-size:12.5px;font-weight:500;color:var(--olive);text-transform:uppercase;margin-bottom:12px">Resultados — ${v.votos} de ${v.socios} votos</div><div class="result-bar">${ress.map(r=>`<div class="result-row"><span class="result-label">${r.l}</span><div class="result-track"><div class="result-fill ${r.f}" style="width:${r.p}%"></div></div><span class="result-pct">${r.p}%</span></div>`).join('')}</div></div>`:''}
+<div class="vitem-actions">
+${v.estado==='activas'&&!v.voto?`<button class="btn-vote bv-primary" onclick="votar('${v.id}')">${cands.length?'Confirmar selección':'Confirmar voto'}</button>`:''}
+${v.voto?`<div class="vitem-voted-badge">✓ Votaste: ${v.voto}</div>`:''}
+${v.estado==='proximas'?`<button class="btn-vote bv-disabled" disabled>Aún no disponible</button>`:''}
+<button class="rule-link">Ver detalles</button>
+</div></div>
+<div class="vitem-aside">
+${v.estado==='activas'?`<div class="vitem-status-badge vsb-active"><span style="width:6px;height:6px;border-radius:50%;background:var(--olive);display:inline-block"></span>Activa</div>`:''}
+${v.estado==='proximas'?`<div class="vitem-status-badge vsb-upcoming"><span style="width:6px;height:6px;border-radius:50%;background:var(--corn);display:inline-block"></span>Próxima</div><div class="vitem-deadline">Abre en <strong>${v.dias_abre} días</strong></div>`:''}
+${v.estado==='cerradas'?`<div class="vitem-status-badge vsb-closed">Cerrada</div><div class="vitem-deadline" style="color:var(--olive-md)">Participación <strong style="color:var(--olive-dk)">${Math.round(v.votos/v.socios*100)}%</strong></div>`:''}
+</div></div>`}).join('')}</div>
+${footer()}`;
+}
+function selOpt(vid,opt){selOpts[vid]=opt;document.querySelectorAll('.vopt').forEach(b=>{if(b.getAttribute('onclick')?.includes(`'${vid}'`))b.classList.toggle('sel',b.textContent.trim()===opt)})}
+function selCand(vid,cid,max){const curr=selCands[vid]||[];if(curr.includes(cid)){selCands[vid]=curr.filter(x=>x!==cid)}else if(curr.length<max){selCands[vid]=[...curr,cid]}else{toast(`Máximo ${max} candidatos`,true);return}document.querySelectorAll('.cand').forEach(el=>{if(el.getAttribute('onclick')?.includes(`'${vid}'`)){const elCid=el.getAttribute('onclick').match(/'([^']+)'/g)?.[1]?.replace(/'/g,'');el.classList.toggle('sel',(selCands[vid]||[]).includes(elCid))}})}
+function filterVot(btn,k){document.querySelectorAll('#vot-tabs .ftab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.vitem').forEach(v=>{v.style.display=(k==='todas'||v.dataset.estado===k)?'':'none'})}
+async function votar(vid){
+  const votaciones=await get('/votaciones');
+  const v=votaciones.find(x=>x.id===vid);
+  let votoFinal='';
+  if(v.opciones&&v.opciones.length){if(!selOpts[vid]){toast('Seleccioná una opción antes de votar.',true);return}votoFinal=selOpts[vid]}
+  else if(v.candidatos&&v.candidatos.length){const sel=selCands[vid]||[];if(!sel.length){toast('Seleccioná al menos un candidato.',true);return}votoFinal=sel.map(cid=>v.candidatos.find(c=>c.id===cid)?.n||cid).join(', ')}
+  const res=await post(`/votaciones/${vid}/votar`,{voto:votoFinal});
+  if(res.ok){toast('Voto registrado correctamente ✓');nav('votaciones')}
+  else{toast(res.error||'Error al registrar el voto.',true)}
+}
+function pagePerfil(){
+  return`<div class="hero fade"><div><div class="hero-eyebrow">Panel</div><h1 class="hero-title">Mi <em>Perfil.</em></h1><p class="hero-sub">Tus datos personales y estado de cuenta.</p></div><button class="btn btn-primary" onclick="toggleEditPerfil()">Editar datos</button></div>
+<div class="fade" style="display:flex;align-items:center;gap:24px;padding:24px 0;border-bottom:1px solid var(--rule);margin-bottom:32px"><div class="perfil-avatar-big">${usuario.nombre?usuario.nombre.split(' ').slice(0,2).map(n=>n[0]).join(''):'--'}</div><div><h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);margin-bottom:4px">${usuario.nombre}</h2><div style="display:flex;gap:10px;flex-wrap:wrap"><span class="pill pill-olive">Socio Activo</span><span class="pill pill-corn">Lote ${usuario.lote}</span><span class="pill pill-olive">Período Marzo 2026</span></div></div></div>
+<div id="perfil-view" class="col-layout fade"><div><div class="sec">Información personal</div><div class="profile-strip"><div class="prow"><span class="prow-key">Nombre completo</span><span class="prow-val">${usuario.nombre}</span></div><div class="prow"><span class="prow-key">Lote / UF</span><span class="prow-val">Lote ${usuario.lote}</span></div><div class="prow"><span class="prow-key">Correo electrónico</span><span class="prow-val" style="font-size:12.5px">${usuario.email}</span></div><div class="prow"><span class="prow-key">Teléfono</span><span class="prow-val">${usuario.telefono}</span></div></div></div><div><div class="sec">Estado de cuenta</div><div class="profile-strip"><div class="prow"><span class="prow-key">Estado de socio</span><span class="status s-green"><span class="status-dot"></span>Activo</span></div><div class="prow"><span class="prow-key">Expensas</span><span class="status s-green"><span class="status-dot"></span>Al día</span></div><div class="prow"><span class="prow-key">Período activo</span><span class="prow-val">Marzo 2026</span></div></div></div></div>
+<div id="perfil-edit" class="form-panel fade" style="display:none"><div class="sec" style="margin-bottom:20px">Editar información personal</div><div class="form-grid"><div class="field"><label class="field-label">Nombre completo</label><input type="text" id="pf-nombre" value="${usuario.nombre}"></div><div class="field"><label class="field-label">Lote</label><input type="text" id="pf-lote" value="${usuario.lote}"></div><div class="field"><label class="field-label">Email</label><input type="email" id="pf-email" value="${usuario.email}"></div><div class="field"><label class="field-label">Teléfono</label><input type="tel" id="pf-tel" value="${usuario.telefono}"></div></div><div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)"><button class="btn btn-primary" onclick="guardarPerfil()">Guardar cambios</button><button class="btn btn-ghost" onclick="toggleEditPerfil()">Cancelar</button></div></div>
+${footer()}`;
+}
+function toggleEditPerfil(){const v=document.getElementById('perfil-view'),e=document.getElementById('perfil-edit');if(!v||!e)return;const show=v.style.display!=='none';v.style.display=show?'none':'grid';e.style.display=show?'block':'none'}
+async function guardarPerfil(){
+  const nombre=document.getElementById('pf-nombre')?.value||usuario.nombre;
+  const lote=document.getElementById('pf-lote')?.value||usuario.lote;
+  const email=document.getElementById('pf-email')?.value||usuario.email;
+  const telefono=document.getElementById('pf-tel')?.value||usuario.telefono;
+  const res=await put('/usuario',{nombre,lote,email,telefono});
+  if(res.ok){usuario={...usuario,nombre,lote,email,telefono};document.getElementById('hdr-nombre').textContent=nombre;document.getElementById('hdr-lote').textContent=lote;document.getElementById('hdr-avatar').textContent=nombre.split(' ').slice(0,2).map(n=>n[0]).join('');toast('Datos actualizados correctamente ✓');nav('perfil')}
+}
+function filterRec(btn,k){document.querySelectorAll('#rec-tabs .ftab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.rec-row').forEach(row=>{const show=k==='todos'||(k==='mis'&&row.dataset.lote===usuario.lote)||(k==='en-curso'&&row.dataset.estado==='En curso')||(k==='resueltos'&&row.dataset.estado==='Resuelto');row.style.display=show?'':'none'})}
+async function render(){
+  const main=document.getElementById('main');
+  main.innerHTML='<div class="loading"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Cargando...</div>';
+  const pages={
+    inicio: typeof pageInicio!=='undefined'?pageInicio:null,
+    servicios: typeof pageServicios!=='undefined'?pageServicios:null,
+    marketplace: typeof pageMarketplace!=='undefined'?pageMarketplace:null,
+    reclamos: typeof pageReclamos!=='undefined'?pageReclamos:null,
+    'nuevo-reclamo': typeof pageNuevoReclamo!=='undefined'?pageNuevoReclamo:null,
+    visitas: typeof pageVisitas!=='undefined'?pageVisitas:null,
+    votaciones: typeof pageVotaciones!=='undefined'?pageVotaciones:null,
+    perfil: typeof pagePerfil!=='undefined'?pagePerfil:null,
+    agenda: typeof pageAgenda!=='undefined'?pageAgenda:null,
+  };
+  const fn=pages[currentPage];
+  if(fn){const html=await fn();main.innerHTML=html}
+  main.scrollTop=0;
+  document.querySelectorAll('.nl').forEach(el=>el.classList.remove('on'));
+  const active=document.getElementById('nl-'+currentPage);
+  if(active)active.classList.add('on');
+}
+(async()=>{const v=localStorage.getItem('vecino');if(!v){window.location.href='/login.html';return;}window._vecino=JSON.parse(v);await cargarUsuario();nav('inicio')})();
+</script>
+</body>
+</html>
+<script>
+async function pageAgenda() {
+  const eventos = await get('/eventos');
+  const cats = {
+    reunion: { label: 'Reunión', color: 'var(--olive)', bg: 'var(--olive-lt)' },
+    deportivo: { label: 'Deportivo', color: 'var(--corn-dk)', bg: 'var(--corn-lt)' },
+    social: { label: 'Social', color: '#7a4a8f', bg: '#f3eef8' },
+    mantenimiento: { label: 'Mantenimiento', color: 'var(--red-soft)', bg: 'var(--red-lt)' },
+    actividad: { label: 'Actividad', color: '#1a6a8a', bg: '#e6f3f8' },
+  };
+  return `
+<div class="hero fade">
+  <div>
+    <div class="hero-eyebrow">Comunidad</div>
+    <h1 class="hero-title">Agenda <em>del barrio.</em></h1>
+    <p class="hero-sub">Eventos, actividades y reuniones de la comunidad.</p>
+  </div>
+  <button class="btn btn-primary" onclick="toggleEventoForm()">+ Nuevo evento</button>
+</div>
+
+<div class="sum-strip fade">
+  <div class="sum-item"><div class="sum-num">${eventos.length}</div><div class="sum-lbl">Total eventos</div></div>
+  <div class="sum-item"><div class="sum-num">${eventos.filter(e=>e.fecha>=new Date().toISOString().split('T')[0]).length}</div><div class="sum-lbl">Próximos</div></div>
+  <div class="sum-item"><div class="sum-num">${eventos.filter(e=>e.yoAsisto).length}</div><div class="sum-lbl">Confirmé asistencia</div></div>
+  <div class="sum-item"><div class="sum-num">${eventos.filter(e=>e.categoria==='deportivo').length}</div><div class="sum-lbl">Deportivos</div></div>
+</div>
+
+<div id="evento-form" style="display:none" class="form-panel fade">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+    <div><div class="sec" style="margin-bottom:4px">Nuevo evento</div><h2 class="col-title">Completá los datos</h2></div>
+    <button onclick="toggleEventoForm()" style="border:none;background:none;cursor:pointer;color:var(--ink-3);font-size:20px">✕</button>
+  </div>
+  <div class="form-grid">
+    <div class="field span2"><label class="field-label">Título del evento</label><input type="text" id="ev-titulo" placeholder="Ej: Torneo de paddle, Reunión de consorcio..."></div>
+    <div class="field span2"><label class="field-label">Descripción</label><textarea id="ev-desc" rows="3" placeholder="Detallá de qué se trata el evento..."></textarea></div>
+    <div class="field"><label class="field-label">Categoría</label><select id="ev-cat"><option value="reunion">Reunión</option><option value="deportivo">Deportivo</option><option value="social">Social</option><option value="mantenimiento">Mantenimiento</option><option value="actividad">Actividad</option></select></div>
+    <div class="field"><label class="field-label">Fecha</label><input type="date" id="ev-fecha"></div>
+    <div class="field"><label class="field-label">Hora inicio</label><input type="time" id="ev-hora-inicio"></div>
+    <div class="field"><label class="field-label">Hora fin</label><input type="time" id="ev-hora-fin"></div>
+    <div class="field"><label class="field-label">Lugar</label><input type="text" id="ev-lugar" placeholder="Ej: SUM, Canchas de tenis, Campo de golf..."></div>
+    <div class="field"><label class="field-label">Máx. asistentes (opcional)</label><input type="number" id="ev-max" placeholder="Dejar vacío si no hay límite"></div>
+  </div>
+  <div style="padding:10px 14px;background:var(--corn-lt);border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--corn-dk)">
+    ⚠️ Los eventos creados por vecinos requieren aprobación de la administración antes de aparecer en la agenda.
+  </div>
+  <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)">
+    <button class="btn btn-primary" onclick="guardarEvento()">Enviar evento</button>
+    <button class="btn btn-ghost" onclick="toggleEventoForm()">Cancelar</button>
+  </div>
+</div>
+
+<div class="ftabs fade" id="agenda-tabs">
+  <button class="ftab on" onclick="filterAgenda(this,'todos')">Todos</button>
+  <button class="ftab" onclick="filterAgenda(this,'reunion')">Reuniones</button>
+  <button class="ftab" onclick="filterAgenda(this,'deportivo')">Deportivos</button>
+  <button class="ftab" onclick="filterAgenda(this,'social')">Sociales</button>
+  <button class="ftab" onclick="filterAgenda(this,'mantenimiento')">Mantenimiento</button>
+  <button class="ftab" onclick="filterAgenda(this,'actividad')">Actividades</button>
+</div>
+
+<div id="agenda-list" class="fade" style="margin-top:0">
+${eventos.map(e => {
+  const cat = cats[e.categoria] || { label: e.categoria, color: 'var(--ink-3)', bg: 'var(--off)' };
+  const fechaObj = new Date(e.fecha + 'T12:00');
+  const fechaFmt = fechaObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const esHoy = e.fecha === new Date().toISOString().split('T')[0];
+  const esPasado = e.fecha < new Date().toISOString().split('T')[0];
+  return `
+<div class="ev-row" data-cat="${e.categoria}" style="display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--rule);${esPasado?'opacity:.6':''}">
+  <div style="width:56px;flex-shrink:0;text-align:center">
+    <div style="font-family:'DM Serif Display',serif;font-size:28px;line-height:1;color:var(--ink);letter-spacing:-1px">${fechaObj.getDate()}</div>
+    <div style="font-size:11px;font-weight:500;text-transform:uppercase;color:var(--ink-3);letter-spacing:.8px">${fechaObj.toLocaleDateString('es-AR',{month:'short'})}</div>
+  </div>
+  <div style="width:3px;background:${cat.color};border-radius:2px;flex-shrink:0;min-height:60px"></div>
+  <div style="flex:1">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+      <span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+      ${esHoy ? '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--corn-lt);color:var(--corn-dk)">Hoy</span>' : ''}
+      ${e.yoAsisto ? '<span style="font-size:11px;font-weight:500;color:var(--olive-dk)">✓ Confirmaste asistencia</span>' : ''}
+    </div>
+    <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:500;color:var(--ink);margin-bottom:4px;line-height:1.3">${e.titulo}</div>
+    <div style="font-size:13px;color:var(--ink-3);font-weight:300;line-height:1.6;margin-bottom:10px">${e.descripcion}</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+      ${e.hora_inicio ? `<span style="font-size:12.5px;color:var(--ink-3)">🕐 ${e.hora_inicio}${e.hora_fin?' – '+e.hora_fin:''}</span>` : ''}
+      ${e.lugar ? `<span style="font-size:12.5px;color:var(--ink-3)">📍 ${e.lugar}</span>` : ''}
+      <span style="font-size:12.5px;color:var(--ink-3)">👥 ${e.asistentes} ${e.asistentes===1?'confirmado':'confirmados'}${e.max_asistentes?' / máx. '+e.max_asistentes:''}</span>
+    </div>
+    ${!esPasado ? `<button class="btn ${e.yoAsisto?'btn-ghost':'btn-primary'}" style="font-size:12.5px;padding:7px 16px" onclick="confirmarAsistencia(${e.id}, this)">
+      ${e.yoAsisto ? 'Cancelar asistencia' : 'Confirmar asistencia'}
+    </button>` : '<span style="font-size:12.5px;color:var(--ink-3)">Evento finalizado</span>'}
+  </div>
+</div>`;
+}).join('')}
+${eventos.length === 0 ? '<div style="padding:40px 0;color:var(--ink-3);font-size:14px">No hay eventos programados.</div>' : ''}
+</div>
+${footer()}`;
+}
+
+function toggleEventoForm() {
+  const f = document.getElementById('evento-form');
+  if (f) f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function filterAgenda(btn, k) {
+  document.querySelectorAll('#agenda-tabs .ftab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.ev-row').forEach(r => {
+    r.style.display = (k === 'todos' || r.dataset.cat === k) ? '' : 'none';
+  });
+}
+
+async function guardarEvento() {
+  const titulo = document.getElementById('ev-titulo')?.value || '';
+  const fecha = document.getElementById('ev-fecha')?.value || '';
+  const cat = document.getElementById('ev-cat')?.value || '';
+  if (!titulo || !fecha || !cat) { toast('Completá título, fecha y categoría.', true); return; }
+  const res = await post('/eventos', {
+    titulo,
+    descripcion: document.getElementById('ev-desc')?.value || '',
+    categoria: cat,
+    fecha,
+    hora_inicio: document.getElementById('ev-hora-inicio')?.value || '',
+    hora_fin: document.getElementById('ev-hora-fin')?.value || '',
+    lugar: document.getElementById('ev-lugar')?.value || '',
+    max_asistentes: document.getElementById('ev-max')?.value || null,
+    creado_por: 'vecino'
+  });
+  if (res.ok) {
+    if (res.aprobado) {
+      toast('Evento creado correctamente ✓');
+    } else {
+      toast('Evento enviado — pendiente de aprobación.');
+    }
+    toggleEventoForm();
+    nav('agenda');
+  } else {
+    toast('Error al crear el evento.', true);
+  }
+}
+
+async function confirmarAsistencia(id, btn) {
+  const res = await post('/eventos/' + id + '/asistir', { nombre: usuario.nombre });
+  if (res.ok) {
+    if (res.accion === 'confirmado') {
+      toast('Asistencia confirmada ✓');
+      btn.textContent = 'Cancelar asistencia';
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-ghost');
+    } else {
+      toast('Asistencia cancelada.');
+      btn.textContent = 'Confirmar asistencia';
+      btn.classList.remove('btn-ghost');
+      btn.classList.add('btn-primary');
+    }
+    const cnt = btn.closest('.ev-row').querySelector('[data-cnt]');
+    if (cnt) cnt.textContent = parseInt(cnt.textContent) + (res.accion === 'confirmado' ? 1 : -1);
+  }
+}
+</script>
+<script>
+async function pageMarketplace() {
+  const pubs = await get('/publicaciones');
+  const aprobadas = pubs.filter(p => p.estado === 'aprobada');
+  const pendientes = pubs.filter(p => p.estado === 'pendiente');
+  const cats = {
+    venta:    { label: 'Venta',    bg: '#E1F5EE', color: '#085041' },
+    servicio: { label: 'Servicio', bg: '#E6F1FB', color: '#0C447C' },
+    donacion: { label: 'Donación', bg: '#FAEEDA', color: '#633806' },
+  };
+  return `
+<div class="hero fade">
+  <div>
+    <div class="hero-eyebrow">Comunidad</div>
+    <h1 class="hero-title">Marketplace <em>del barrio.</em></h1>
+    <p class="hero-sub">Comprá, vendé, ofrecé servicios y doná entre vecinos.</p>
+  </div>
+  <button class="btn btn-primary" onclick="togglePubForm()">+ Nueva publicación</button>
+</div>
+
+<div class="sum-strip fade">
+  <div class="sum-item"><div class="sum-num">${aprobadas.length}</div><div class="sum-lbl">Publicaciones activas</div></div>
+  <div class="sum-item"><div class="sum-num">${aprobadas.filter(p=>p.categoria==='venta').length}</div><div class="sum-lbl">En venta</div></div>
+  <div class="sum-item"><div class="sum-num">${aprobadas.filter(p=>p.categoria==='servicio').length}</div><div class="sum-lbl">Servicios</div></div>
+  <div class="sum-item"><div class="sum-num">${aprobadas.filter(p=>p.categoria==='donacion').length}</div><div class="sum-lbl">Donaciones</div></div>
+</div>
+
+<div id="pub-form" style="display:none" class="form-panel fade">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+    <div><div class="sec" style="margin-bottom:4px">Nueva publicación</div><h2 class="col-title">Completá los datos</h2></div>
+    <button onclick="togglePubForm()" style="border:none;background:none;cursor:pointer;color:var(--ink-3);font-size:20px">✕</button>
+  </div>
+  <div class="form-grid">
+    <div class="field span2"><label class="field-label">Título</label><input type="text" id="pf-titulo" placeholder="Ej: Bicicleta Trek, Clases de tenis..."></div>
+    <div class="field span2"><label class="field-label">Descripción</label><textarea id="pf-desc" rows="3" placeholder="Describí lo que ofrecés..."></textarea></div>
+    <div class="field"><label class="field-label">Categoría</label>
+      <select id="pf-cat">
+        <option value="venta">Venta</option>
+        <option value="servicio">Servicio</option>
+        <option value="donacion">Donación</option>
+      </select>
+    </div>
+    <div class="field"><label class="field-label">Precio (dejar vacío si es donación)</label><input type="number" id="pf-precio" placeholder="Ej: 5000"></div>
+    <div class="field span2"><label class="field-label">Teléfono de contacto</label><input type="tel" id="pf-contacto" placeholder="+54 11 ..."></div>
+  </div>
+  <div style="padding:10px 14px;background:var(--corn-lt);border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--corn-dk)">
+    ⚠️ Tu publicación quedará pendiente de aprobación por la administración antes de ser visible.
+  </div>
+  <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)">
+    <button class="btn btn-primary" onclick="guardarPublicacion()">Enviar publicación</button>
+    <button class="btn btn-ghost" onclick="togglePubForm()">Cancelar</button>
+  </div>
+</div>
+
+${pendientes.length > 0 ? `
+<div style="padding:12px 16px;background:var(--corn-lt);border:1px solid #e8d090;border-radius:10px;margin-bottom:24px;font-size:13px;color:var(--corn-dk);display:flex;align-items:center;gap:10px">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <span><strong>${pendientes.length} publicación${pendientes.length>1?'es':''} pendiente${pendientes.length>1?'s':''} de aprobación.</strong> Solo visible para la administración.</span>
+</div>` : ''}
+
+<div class="ftabs fade" id="mkt-tabs">
+  <button class="ftab on" onclick="filterMkt(this,'todas')">Todas</button>
+  <button class="ftab" onclick="filterMkt(this,'venta')">En venta</button>
+  <button class="ftab" onclick="filterMkt(this,'servicio')">Servicios</button>
+  <button class="ftab" onclick="filterMkt(this,'donacion')">Donaciones</button>
+</div>
+
+<div id="mkt-list" class="fade" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px">
+${aprobadas.map(p => {
+  const cat = cats[p.categoria] || { label: p.categoria, bg: 'var(--off)', color: 'var(--ink-3)' };
+  return `
+<div class="mkt-card" data-cat="${p.categoria}" style="border:1px solid var(--rule);border-radius:12px;padding:20px;background:var(--white);display:flex;flex-direction:column;gap:10px">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+    <div>
+      <span style="font-size:11px;font-weight:500;padding:2px 9px;border-radius:10px;background:${cat.bg};color:${cat.color};display:inline-block;margin-bottom:8px">${cat.label}</span>
+      <div style="font-size:15px;font-weight:500;color:var(--ink);line-height:1.3">${p.titulo}</div>
+    </div>
+    ${p.precio ? `<div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);letter-spacing:-1px;flex-shrink:0">$${Number(p.precio).toLocaleString('es-AR')}</div>` : '<div style="font-size:12px;font-weight:500;color:var(--olive-dk);background:var(--olive-lt);padding:3px 10px;border-radius:10px;flex-shrink:0">Gratis</div>'}
+  </div>
+  <div style="font-size:13px;color:var(--ink-3);font-weight:300;line-height:1.6">${p.descripcion}</div>
+  <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);margin-top:4px">
+    <div style="width:24px;height:24px;border-radius:50%;background:var(--olive-lt);color:var(--olive-dk);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${p.autor.split(' ').slice(0,2).map(n=>n[0]).join('')}</div>
+    ${p.autor} · Lote ${p.lote}
+  </div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button class="btn btn-primary" style="font-size:12px;padding:7px 14px;flex:1" onclick="abrirChat(${p.id},'${p.titulo.replace(/'/g,"\\'")}','${p.autor.replace(/'/g,"\\'")}')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Contactar
+    </button>
+    <a href="tel:${p.contacto}" class="btn btn-ghost" style="font-size:12px;padding:7px 14px;flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.08 1.22 2 2 0 012.06 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Llamar
+    </a>
+  </div>
+</div>`;
+}).join('')}
+</div>
+
+<div id="chat-panel" style="display:none;position:fixed;bottom:24px;right:24px;width:340px;background:var(--white);border:1px solid var(--rule);border-radius:14px;z-index:500;overflow:hidden">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;background:var(--olive);color:#fff">
+    <div>
+      <div style="font-size:13px;font-weight:500" id="chat-titulo">Chat</div>
+      <div style="font-size:11px;opacity:.8" id="chat-autor"></div>
+    </div>
+    <button onclick="cerrarChat()" style="border:none;background:none;cursor:pointer;color:#fff;font-size:18px;line-height:1">✕</button>
+  </div>
+  <div id="chat-mensajes" style="height:220px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px"></div>
+  <div style="padding:10px 12px;border-top:1px solid var(--rule);display:flex;gap:8px">
+    <input type="text" id="chat-input" placeholder="Escribí tu mensaje..." style="flex:1;padding:8px 10px;border:1px solid var(--rule);border-radius:8px;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')enviarMensaje()">
+    <button class="btn btn-primary" style="padding:8px 14px;font-size:13px" onclick="enviarMensaje()">Enviar</button>
+  </div>
+</div>
+
+${footer()}`;
+}
+
+let chatPubId = null;
+
+function togglePubForm() {
+  const f = document.getElementById('pub-form');
+  if (f) f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function filterMkt(btn, k) {
+  document.querySelectorAll('#mkt-tabs .ftab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.mkt-card').forEach(c => {
+    c.style.display = (k === 'todas' || c.dataset.cat === k) ? '' : 'none';
+  });
+}
+
+async function guardarPublicacion() {
+  const titulo = document.getElementById('pf-titulo')?.value || '';
+  const cat = document.getElementById('pf-cat')?.value || '';
+  if (!titulo || !cat) { toast('Completá el título y la categoría.', true); return; }
+  const res = await post('/publicaciones', {
+    titulo,
+    descripcion: document.getElementById('pf-desc')?.value || '',
+    categoria: cat,
+    precio: document.getElementById('pf-precio')?.value || null,
+    contacto: document.getElementById('pf-contacto')?.value || '',
+  });
+  if (res.ok) {
+    toast('Publicación enviada — pendiente de aprobación.');
+    togglePubForm();
+    nav('marketplace');
+  } else {
+    toast('Error al publicar.', true);
+  }
+}
+
+async function abrirChat(pubId, titulo, autor) {
+  chatPubId = pubId;
+  document.getElementById('chat-titulo').textContent = titulo;
+  document.getElementById('chat-autor').textContent = 'Con: ' + autor;
+  document.getElementById('chat-panel').style.display = 'block';
+  await cargarMensajes();
+}
+
+function cerrarChat() {
+  document.getElementById('chat-panel').style.display = 'none';
+  chatPubId = null;
+}
+
+async function cargarMensajes() {
+  if (!chatPubId) return;
+  const msgs = await get('/publicaciones/' + chatPubId + '/mensajes');
+  const cont = document.getElementById('chat-mensajes');
+  if (!cont) return;
+  cont.innerHTML = msgs.length === 0
+    ? '<div style="font-size:13px;color:var(--ink-3);text-align:center;margin-top:40px">Iniciá la conversación</div>'
+    : msgs.map(m => {
+        const esPropio = m.de_lote === (window._usuarioLote || '42');
+        return `<div style="display:flex;flex-direction:column;align-items:${esPropio?'flex-end':'flex-start'}">
+          <div style="max-width:80%;padding:8px 12px;border-radius:${esPropio?'12px 12px 2px 12px':'12px 12px 12px 2px'};background:${esPropio?'var(--olive)':'var(--olive-xs)'};color:${esPropio?'#fff':'var(--ink)'};font-size:13px;line-height:1.5">${m.mensaje}</div>
+          <div style="font-size:11px;color:var(--ink-3);margin-top:3px">${m.de_nombre} · Lote ${m.de_lote}</div>
+        </div>`;
+      }).join('');
+  cont.scrollTop = cont.scrollHeight;
+}
+
+async function enviarMensaje() {
+  const input = document.getElementById('chat-input');
+  const msg = input?.value?.trim() || '';
+  if (!msg || !chatPubId) return;
+  input.value = '';
+  const res = await post('/publicaciones/' + chatPubId + '/mensajes', { mensaje: msg });
+  if (res.ok) await cargarMensajes();
+}
+
+window._usuarioLote = '42';
+</script>
+<script>
+async function pageServicios() {
+  const [proveedores, instalaciones, misReservas] = await Promise.all([
+    get('/proveedores'),
+    get('/instalaciones'),
+    get('/reservas')
+  ]);
+
+  const cats = {};
+  proveedores.forEach(p => {
+    if (!cats[p.categoria]) cats[p.categoria] = [];
+    cats[p.categoria].push(p);
+  });
+
+  const catColors = {
+    'Plomería':      { bg:'#E1F5EE', color:'#085041' },
+    'Electricidad':  { bg:'#E6F1FB', color:'#0C447C' },
+    'Jardinería':    { bg:'#EAF3DE', color:'#27500A' },
+    'Pintura':       { bg:'#FAEEDA', color:'#633806' },
+    'Climatización': { bg:'#FAECE7', color:'#712B13' },
+    'Seguridad':     { bg:'#EEEDFE', color:'#3C3489' },
+  };
+
+  return `
+<div class="hero fade">
+  <div>
+    <div class="hero-eyebrow">Comunidad</div>
+    <h1 class="hero-title">Servicios <em>del barrio.</em></h1>
+    <p class="hero-sub">Proveedores habilitados e instalaciones del club.</p>
+  </div>
+</div>
+
+<div class="sum-strip fade">
+  <div class="sum-item"><div class="sum-num">${proveedores.length}</div><div class="sum-lbl">Proveedores habilitados</div></div>
+  <div class="sum-item"><div class="sum-num">${instalaciones.length}</div><div class="sum-lbl">Instalaciones</div></div>
+  <div class="sum-item"><div class="sum-num">${misReservas.filter(r=>r.estado==='confirmada').length}</div><div class="sum-lbl">Mis reservas activas</div></div>
+  <div class="sum-item"><div class="sum-num">${Object.keys(cats).length}</div><div class="sum-lbl">Categorías</div></div>
+</div>
+
+<div class="ftabs fade" id="srv-tabs">
+  <button class="ftab on" onclick="filterSrv(this,'proveedores')">Proveedores</button>
+  <button class="ftab" onclick="filterSrv(this,'instalaciones')">Instalaciones y reservas</button>
+  <button class="ftab" onclick="filterSrv(this,'mis-reservas')">Mis reservas</button>
+</div>
+
+<div id="srv-proveedores" class="fade" style="margin-top:24px">
+  ${Object.entries(cats).map(([cat, provs]) => {
+    const c = catColors[cat] || { bg:'var(--off)', color:'var(--ink-3)' };
+    return `
+  <div style="margin-bottom:32px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <span style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:10px;background:${c.bg};color:${c.color}">${cat}</span>
+      <span style="font-size:12px;color:var(--ink-3)">${provs.length} proveedor${provs.length>1?'es':''}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      ${provs.map(p => `
+      <div style="border:1px solid var(--rule);border-radius:12px;padding:20px;background:var(--white)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:3px">${p.nombre}</div>
+            <div style="font-size:12px;color:var(--ink-3)">${p.horario||'—'}</div>
+          </div>
+          <span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px;background:var(--olive-lt);color:var(--olive-dk);white-space:nowrap;flex-shrink:0">Habilitado</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-3);font-weight:300;line-height:1.6;margin-bottom:14px">${p.descripcion||''}</div>
+        <div style="display:flex;gap:8px">
+          <a href="tel:${p.telefono}" class="btn btn-primary" style="font-size:12px;padding:7px 14px;flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.08 1.22 2 2 0 012.06 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Llamar
+          </a>
+          <a href="mailto:${p.email}" class="btn btn-ghost" style="font-size:12px;padding:7px 14px;flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+            Email
+          </a>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  }).join('')}
+</div>
+
+<div id="srv-instalaciones" style="display:none;margin-top:24px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="fade">
+    ${instalaciones.map(inst => `
+    <div style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--white)">
+      <div style="height:6px;background:${inst.imagen_color}"></div>
+      <div style="padding:20px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">${inst.nombre}</div>
+          <span style="font-size:11px;color:var(--ink-3);white-space:nowrap;flex-shrink:0">Cap. ${inst.capacidad} pers.</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-3);font-weight:300;line-height:1.6;margin-bottom:8px">${inst.descripcion||''}</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:16px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${inst.horario||'—'}
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:13px" onclick="abrirReserva(${inst.id},'${inst.nombre.replace(/'/g,"\\'")}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Reservar
+        </button>
+      </div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div id="srv-mis-reservas" style="display:none;margin-top:24px">
+  ${misReservas.length===0
+    ? '<div style="padding:40px 0;text-align:center;color:var(--ink-3);font-size:14px">No tenés reservas activas.</div>'
+    : `<table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr>
+          ${['Instalación','Fecha','Horario','Estado',''].map(h=>`<th style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3);padding:10px 0;border-bottom:1px solid var(--rule);text-align:left">${h}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+        ${misReservas.map(r=>`
+        <tr>
+          <td style="padding:14px 0;border-bottom:1px solid var(--rule);font-weight:500">${r.instalacion_nombre}</td>
+          <td style="padding:14px 0;border-bottom:1px solid var(--rule)">${r.fecha}</td>
+          <td style="padding:14px 0;border-bottom:1px solid var(--rule);color:var(--ink-3)">${r.hora_inicio} – ${r.hora_fin}</td>
+          <td style="padding:14px 0;border-bottom:1px solid var(--rule)">
+            <span class="chip ${r.estado==='confirmada'?'chip-olive':'chip-gray'}">${r.estado}</span>
+          </td>
+          <td style="padding:14px 0;border-bottom:1px solid var(--rule);text-align:right">
+            ${r.estado==='confirmada'?`<button class="btn btn-ghost" style="font-size:12px;color:var(--red-soft);border-color:var(--rule)" onclick="cancelarReserva(${r.id})">Cancelar</button>`:''}
+          </td>
+        </tr>`).join('')}
+        </tbody>
+      </table>`}
+</div>
+
+<div id="reserva-modal" style="display:none;position:fixed;inset:0;background:rgba(28,31,24,.35);z-index:400;display:none;align-items:center;justify-content:center">
+  <div style="background:var(--white);border-radius:16px;padding:32px;width:100%;max-width:440px;margin:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="sec" style="margin-bottom:4px">Nueva reserva</div>
+        <h2 class="col-title" id="modal-inst-nombre">Instalación</h2>
+      </div>
+      <button onclick="cerrarReserva()" style="border:none;background:none;cursor:pointer;color:var(--ink-3);font-size:20px">✕</button>
+    </div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px 16px;margin-bottom:16px">
+      <div class="field span2"><label class="field-label">Fecha</label><input type="date" id="res-fecha"></div>
+      <div class="field"><label class="field-label">Hora inicio</label><input type="time" id="res-inicio"></div>
+      <div class="field"><label class="field-label">Hora fin</label><input type="time" id="res-fin"></div>
+    </div>
+    <div id="reservas-ocupadas" style="margin-bottom:16px;font-size:12.5px;color:var(--ink-3)"></div>
+    <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="confirmarReserva()">Confirmar reserva</button>
+      <button class="btn btn-ghost" onclick="cerrarReserva()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+${footer()}`;
+}
+
+function filterSrv(btn, k) {
+  document.querySelectorAll('#srv-tabs .ftab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  ['proveedores','instalaciones','mis-reservas'].forEach(id => {
+    const el = document.getElementById('srv-'+id);
+    if (el) el.style.display = id===k ? '' : 'none';
+  });
+}
+
+let reservaInstId = null;
+
+async function abrirReserva(id, nombre) {
+  reservaInstId = id;
+  document.getElementById('modal-inst-nombre').textContent = nombre;
+  document.getElementById('reserva-modal').style.display = 'flex';
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('res-fecha').value = hoy;
+  await cargarOcupadas(id, hoy);
+  document.getElementById('res-fecha').onchange = async (e) => await cargarOcupadas(id, e.target.value);
+}
+
+async function cargarOcupadas(id, fecha) {
+  const reservas = await get('/instalaciones/'+id+'/reservas');
+  const delDia = reservas.filter(r => r.fecha === fecha);
+  const cont = document.getElementById('reservas-ocupadas');
+  if (!cont) return;
+  if (delDia.length === 0) {
+    cont.innerHTML = '<span style="color:var(--olive-dk)">✓ Sin reservas para esta fecha.</span>';
+  } else {
+    cont.innerHTML = '<div style="margin-bottom:6px;font-weight:500;color:var(--ink-2)">Horarios ocupados:</div>' +
+      delDia.map(r => `<div style="display:inline-block;margin:2px 4px;padding:2px 8px;background:var(--red-lt);color:var(--red-soft);border-radius:6px;font-size:12px">${r.hora_inicio}–${r.hora_fin}</div>`).join('');
+  }
+}
+
+function cerrarReserva() {
+  document.getElementById('reserva-modal').style.display = 'none';
+  reservaInstId = null;
+}
+
+async function confirmarReserva() {
+  const fecha = document.getElementById('res-fecha')?.value;
+  const inicio = document.getElementById('res-inicio')?.value;
+  const fin = document.getElementById('res-fin')?.value;
+  if (!fecha || !inicio || !fin) { toast('Completá fecha y horario.', true); return; }
+  if (inicio >= fin) { toast('La hora fin debe ser mayor que la hora inicio.', true); return; }
+  const res = await post('/reservas', { instalacion_id: reservaInstId, fecha, hora_inicio: inicio, hora_fin: fin });
+  if (res.ok) {
+    toast('Reserva confirmada ✓');
+    cerrarReserva();
+    nav('servicios');
+  } else {
+    toast(res.error || 'Error al reservar.', true);
+  }
+}
+
+async function cancelarReserva(id) {
+  if (!confirm('¿Cancelar esta reserva?')) return;
+  const res = await fetch('http://localhost:3000/api/reservas/'+id, { method: 'DELETE' });
+  if (res.ok) { toast('Reserva cancelada.'); nav('servicios'); }
+}
+</script>

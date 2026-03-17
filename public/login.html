@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingresar — El Espinillo Golf Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--olive:#5c6b45;--olive-dk:#3d4a2e;--olive-md:#7a8f5f;--olive-lt:#e8eddf;--olive-xs:#f4f6f0;--corn:#d4a843;--corn-lt:#fdf3db;--corn-dk:#a07c28;--white:#fff;--off:#fafaf8;--ink:#1c1f18;--ink-2:#4a4f40;--ink-3:#8a9080;--rule:#dde3d4;--red-soft:#c0392b;--red-lt:#fdecea;--ease:.22s cubic-bezier(.4,0,.2,1)}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--olive-dk);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;-webkit-font-smoothing:antialiased}
+.wrap{width:100%;max-width:420px}
+.logo{text-align:center;margin-bottom:32px}
+.logo-text{font-family:'DM Serif Display',serif;font-size:28px;color:#fff;letter-spacing:-.3px}
+.logo-text em{font-style:italic;color:var(--olive-md)}
+.logo-sub{font-size:13px;color:rgba(255,255,255,.5);margin-top:6px}
+.card{background:var(--white);border-radius:16px;padding:36px;margin-bottom:16px}
+.tabs{display:flex;border-bottom:1px solid var(--rule);margin-bottom:28px}
+.tab{flex:1;padding:10px 0;text-align:center;font-size:14px;font-weight:400;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--ease);background:none;border-top:none;border-left:none;border-right:none}
+.tab:hover{color:var(--ink-2)}
+.tab.on{color:var(--olive-dk);font-weight:500;border-bottom-color:var(--olive)}
+.form-section{display:none}
+.form-section.on{display:block}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px}
+.field input{width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font-size:14px;color:var(--ink);outline:none;transition:border-color var(--ease);font-family:inherit}
+.field input:focus{border-color:var(--olive)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-full{width:100%;padding:12px;background:var(--olive);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:background var(--ease);font-family:inherit;margin-top:4px}
+.btn-full:hover{background:var(--olive-dk)}
+.btn-full:disabled{background:var(--rule);color:var(--ink-3);cursor:not-allowed}
+.err{font-size:13px;color:var(--red-soft);background:var(--red-lt);padding:10px 14px;border-radius:8px;margin-bottom:16px;display:none}
+.ok{font-size:13px;color:var(--olive-dk);background:var(--olive-lt);padding:10px 14px;border-radius:8px;margin-bottom:16px;display:none}
+.hint{font-size:12.5px;color:var(--ink-3);text-align:center;margin-top:16px;line-height:1.6}
+.code-hint{font-size:12px;color:var(--ink-3);margin-top:6px;line-height:1.5}
+.footer-txt{text-align:center;font-size:12px;color:rgba(255,255,255,.4);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+    <div class="logo-text">El Espinillo <em>Golf Club</em></div>
+    <div class="logo-sub">Panel de vecinos</div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab on" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="tab" onclick="switchTab('registro')">Registrarme</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-section on" id="sec-login">
+      <div class="err" id="login-err"></div>
+      <div class="field">
+        <label>DNI</label>
+        <input type="text" id="l-dni" placeholder="Ej: 28341090" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn-full" id="btn-login" onclick="doLogin()">Ingresar al panel</button>
+      <div class="hint">¿No tenés cuenta? Pedile el código de tu lote a la administración y registrate.</div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="form-section" id="sec-registro">
+      <div class="err" id="reg-err"></div>
+      <div class="ok" id="reg-ok"></div>
+      <div class="field">
+        <label>Código de lote <span style="color:var(--red-soft)">*</span></label>
+        <input type="text" id="r-codigo" placeholder="Ej: ESP-042-X7K" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+        <div class="code-hint">Este código te lo entrega la administración del barrio.</div>
+      </div>
+      <div class="field-row">
+        <div class="field" style="margin-bottom:0">
+          <label>Nombre <span style="color:var(--red-soft)">*</span></label>
+          <input type="text" id="r-nombre" placeholder="Martín">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Apellido <span style="color:var(--red-soft)">*</span></label>
+          <input type="text" id="r-apellido" placeholder="García">
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>DNI <span style="color:var(--red-soft)">*</span></label>
+        <input type="text" id="r-dni" placeholder="Sin puntos: 28341090">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="r-email" placeholder="tu@email.com">
+      </div>
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="tel" id="r-tel" placeholder="+54 11 ...">
+      </div>
+      <div class="field">
+        <label>Contraseña <span style="color:var(--red-soft)">*</span></label>
+        <input type="password" id="r-pass" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="field">
+        <label>Repetir contraseña <span style="color:var(--red-soft)">*</span></label>
+        <input type="password" id="r-pass2" placeholder="Repetí la contraseña">
+      </div>
+      <button class="btn-full" id="btn-registro" onclick="doRegistro()">Crear mi cuenta</button>
+    </div>
+  </div>
+
+  <div class="footer-txt">El Espinillo Golf Club de Campo · Panel vecinos v1.0</div>
+</div>
+
+<script>
+const API = 'http://localhost:3000/api';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('on', (i===0&&tab==='login')||(i===1&&tab==='registro')));
+  document.getElementById('sec-login').classList.toggle('on', tab==='login');
+  document.getElementById('sec-registro').classList.toggle('on', tab==='registro');
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideErr(id) { document.getElementById(id).style.display = 'none'; }
+function showOk(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function doLogin() {
+  hideErr('login-err');
+  const dni = document.getElementById('l-dni').value.trim();
+  const password = document.getElementById('l-pass').value;
+  if (!dni || !password) { showErr('login-err', 'Ingresá tu DNI y contraseña.'); return; }
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = 'Ingresando...';
+  try {
+    const r = await fetch(API+'/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({dni, password}) });
+    const data = await r.json();
+    if (data.ok) {
+      localStorage.setItem('vecino', JSON.stringify(data.vecino));localStorage.setItem('token', data.token);
+      window.location.href = '/index.html';
+    } else {
+      showErr('login-err', data.error || 'DNI o contraseña incorrectos.');
+    }
+  } catch(e) {
+    showErr('login-err', 'Error de conexión. Verificá que el servidor esté corriendo.');
+  }
+  btn.disabled = false; btn.textContent = 'Ingresar al panel';
+}
+
+async function doRegistro() {
+  hideErr('reg-err');
+  document.getElementById('reg-ok').style.display = 'none';
+  const codigo = document.getElementById('r-codigo').value.trim();
+  const nombre = document.getElementById('r-nombre').value.trim();
+  const apellido = document.getElementById('r-apellido').value.trim();
+  const dni = document.getElementById('r-dni').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const tel = document.getElementById('r-tel').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  const pass2 = document.getElementById('r-pass2').value;
+  if (!codigo||!nombre||!apellido||!dni||!pass) { showErr('reg-err','Completá todos los campos obligatorios.'); return; }
+  if (pass.length < 6) { showErr('reg-err','La contraseña debe tener al menos 6 caracteres.'); return; }
+  if (pass !== pass2) { showErr('reg-err','Las contraseñas no coinciden.'); return; }
+  const btn = document.getElementById('btn-registro');
+  btn.disabled = true; btn.textContent = 'Creando cuenta...';
+  try {
+    const r = await fetch(API+'/auth/registro', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({nombre, apellido, dni, password:pass, codigo_lote:codigo, email, telefono:tel}) });
+    const data = await r.json();
+    if (data.ok) {
+      showOk('reg-ok', `✓ Cuenta creada para Lote ${data.lote}. Ya podés iniciar sesión.`);
+      setTimeout(() => switchTab('login'), 2000);
+    } else {
+      showErr('reg-err', data.error || 'Error al crear la cuenta.');
+    }
+  } catch(e) {
+    showErr('reg-err', 'Error de conexión.');
+  }
+  btn.disabled = false; btn.textContent = 'Crear mi cuenta';
+}
+
+if (localStorage.getItem('vecino')) {
+  window.location.href = '/index.html';
+}
+</script>
+</body>
+</html>

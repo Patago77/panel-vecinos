@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administración — El Espinillo Golf Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --olive:#5c6b45;--olive-dk:#3d4a2e;--olive-md:#7a8f5f;--olive-lt:#e8eddf;--olive-xs:#f4f6f0;
+  --corn:#d4a843;--corn-lt:#fdf3db;--corn-dk:#a07c28;
+  --white:#fff;--off:#fafaf8;--ink:#1c1f18;--ink-2:#4a4f40;--ink-3:#8a9080;--rule:#dde3d4;
+  --red-soft:#c0392b;--red-lt:#fdecea;
+  --sw:220px;--hh:60px;--ease:.22s cubic-bezier(.4,0,.2,1);
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--olive-dk)}
+.login-box{background:var(--white);border-radius:16px;padding:40px;width:100%;max-width:380px}
+.login-logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--olive-dk);margin-bottom:6px}
+.login-logo em{font-style:italic;color:var(--olive-md)}
+.login-sub{font-size:13px;color:var(--ink-3);margin-bottom:28px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label{font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.3px;text-transform:uppercase}
+.field input{padding:10px 12px;border:1px solid var(--rule);border-radius:8px;font-size:14px;color:var(--ink);outline:none;transition:border-color var(--ease)}
+.field input:focus{border-color:var(--olive)}
+.login-btn{width:100%;padding:11px;background:var(--olive);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:background var(--ease)}
+.login-btn:hover{background:var(--olive-dk)}
+.login-err{font-size:13px;color:var(--red-soft);margin-top:10px;display:none}
+
+/* HEADER */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--olive-dk);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:200}
+.hdr-logo{font-family:'DM Serif Display',serif;font-size:17px;color:#fff;letter-spacing:-.2px}
+.hdr-logo em{font-style:italic;color:var(--olive-md)}
+.hdr-badge{font-size:11px;font-weight:500;background:rgba(255,255,255,.15);color:#fff;padding:3px 10px;border-radius:20px}
+.hdr-space{flex:1}
+.hdr-user{font-size:12.5px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px}
+.logout-hdr{padding:6px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:12px;font-weight:500;cursor:pointer;transition:background var(--ease)}
+.logout-hdr:hover{background:rgba(255,255,255,.2)}
+
+/* LAYOUT */
+.layout{display:flex;margin-top:var(--hh);min-height:calc(100vh - var(--hh))}
+.sidebar{position:fixed;top:var(--hh);left:0;bottom:0;width:var(--sw);background:var(--white);border-right:1px solid var(--rule);display:flex;flex-direction:column;overflow-y:auto;padding:0 0 24px}
+.ng{padding:20px 0 4px}
+.ng-label{font-size:9.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);padding:0 20px;margin-bottom:4px;display:block}
+.nl{display:flex;align-items:center;gap:10px;padding:9px 16px 9px 20px;font-size:13px;font-weight:400;color:var(--ink-2);cursor:pointer;border-left:2px solid transparent;transition:all var(--ease);border-top:none;border-right:none;border-bottom:none;background:none;width:100%;text-align:left}
+.nl:hover{color:var(--olive-dk);background:var(--olive-xs)}
+.nl.on{color:var(--olive-dk);font-weight:500;border-left-color:var(--olive);background:var(--olive-xs)}
+.nbadge{margin-left:auto;background:var(--red-soft);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:16px;text-align:center}
+.nbadge-corn{background:var(--corn);color:var(--ink)}
+.nsep{height:1px;background:var(--rule);margin:10px 16px}
+.nfoot{flex:1}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:36px 44px 60px;background:var(--white)}
+.hero{padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:24px}
+.hero-eyebrow{font-size:10px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:var(--olive-md);margin-bottom:6px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:36px;line-height:1.1;letter-spacing:-.5px;color:var(--ink)}
+.hero-title em{font-style:italic;color:var(--olive-md)}
+.hero-sub{margin-top:4px;font-size:13px;color:var(--ink-3);font-weight:300}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
+.stat-card{background:var(--off);border-radius:10px;padding:18px 20px}
+.stat-num{font-family:'DM Serif Display',serif;font-size:36px;letter-spacing:-1px;color:var(--ink);line-height:1}
+.stat-lbl{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.stat-card.alert{background:var(--red-lt);border:1px solid #f5c0ba}
+.stat-card.alert .stat-num{color:var(--red-soft)}
+.stat-card.warn{background:var(--corn-lt);border:1px solid #e8d090}
+.stat-card.warn .stat-num{color:var(--corn-dk)}
+
+/* TABLE */
+.sec{font-size:10px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3);padding:10px 0;border-bottom:1px solid var(--rule);text-align:left}
+.tbl td{padding:16px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.tbl td:last-child,.tbl th:last-child{text-align:right}
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:500;white-space:nowrap}
+.chip-olive{background:var(--olive-lt);color:var(--olive-dk)}
+.chip-corn{background:var(--corn-lt);color:var(--corn-dk)}
+.chip-red{background:var(--red-lt);color:var(--red-soft)}
+.chip-gray{background:var(--off);color:var(--ink-3);border:1px solid var(--rule)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:500;cursor:pointer;border:none;transition:all var(--ease)}
+.btn-primary{background:var(--olive);color:#fff}.btn-primary:hover{background:var(--olive-dk)}
+.btn-ghost{background:none;color:var(--ink-2);border:1px solid var(--rule)}.btn-ghost:hover{background:var(--olive-xs)}
+.btn-danger{background:none;color:var(--red-soft);border:1px solid var(--rule)}.btn-danger:hover{background:var(--red-lt)}
+.btn-corn{background:var(--corn-lt);color:var(--corn-dk);border:1px solid #e8d090}.btn-corn:hover{background:var(--corn);color:#fff}
+.btns{display:flex;gap:6px;justify-content:flex-end}
+.empty{padding:32px 0;text-align:center;color:var(--ink-3);font-size:13px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--olive-dk);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:999;animation:toastIn .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.toast.err{background:var(--red-soft)}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .35s ease both}
+
+/* FORM PANEL */
+.form-panel{background:var(--olive-xs);border:1px solid var(--rule);border-radius:12px;padding:24px;margin-bottom:28px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin-bottom:18px}
+.field-label{font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.3px;text-transform:uppercase;display:block;margin-bottom:5px}
+.form-grid input,.form-grid select,.form-grid textarea{padding:8px 11px;border:1px solid var(--rule);border-radius:8px;background:#fff;font-size:13px;color:var(--ink);outline:none;width:100%}
+.form-grid input:focus,.form-grid select:focus,.form-grid textarea:focus{border-color:var(--olive)}
+.span2{grid-column:span 2}
+.ftabs{display:flex;border-bottom:1px solid var(--rule);margin-bottom:20px}
+.ftab{padding:9px 0;margin-right:24px;font-size:13px;font-weight:400;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;transition:all var(--ease)}
+.ftab:hover{color:var(--ink-2)}
+.ftab.on{color:var(--olive-dk);font-weight:500;border-bottom-color:var(--olive)}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .sidebar{display:none}
+  .main{margin-left:0;padding:24px 20px 48px}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">El Espinillo <em>Golf Club</em></div>
+      <div class="login-sub">Panel de Administración — Acceso restringido</div>
+      <div class="field">
+        <label>Usuario</label>
+        <input type="text" id="l-user" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" onclick="doLogin()">Ingresar al panel</button>
+      <div class="login-err" id="login-err">Usuario o contraseña incorrectos.</div>
+    </div>
+  </div>
+</div>
+
+<div id="admin-screen" style="display:none">
+  <header class="hdr">
+    <div class="hdr-logo">El Espinillo <em>Golf Club</em></div>
+    <span class="hdr-badge">Administración</span>
+    <div class="hdr-space"></div>
+    <div class="hdr-user">
+      <span>Panel Admin</span>
+      <button class="logout-hdr" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="ng">
+        <span class="ng-label">Panel</span>
+        <button class="nl on" id="nl-dashboard" onclick="nav('dashboard')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </button>
+      </div>
+      <div class="nsep"></div>
+      <div class="ng">
+        <span class="ng-label">Pendientes</span>
+        <button class="nl" id="nl-pub-pendientes" onclick="nav('pub-pendientes')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M3 9h18v11a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/></svg>
+          Marketplace
+          <span class="nbadge" id="badge-pub">0</span>
+        </button>
+        <button class="nl" id="nl-ev-pendientes" onclick="nav('ev-pendientes')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Eventos
+          <span class="nbadge" id="badge-ev">0</span>
+        </button>
+      </div>
+      <div class="nsep"></div>
+      <div class="ng">
+        <span class="ng-label">Gestión</span>
+        <button class="nl" id="nl-reclamos" onclick="nav('reclamos')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          Reclamos
+        </button>
+        <button class="nl" id="nl-visitas" onclick="nav('visitas')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 2v3M8 2v3M2 10h20"/></svg>
+          Visitas
+        </button>
+        <button class="nl" id="nl-eventos-todos" onclick="nav('eventos-todos')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Todos los eventos
+        </button>
+        <button class="nl" id="nl-nuevo-evento" onclick="nav('nuevo-evento')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Crear evento
+        </button>
+      </div>
+      <div class="nfoot"></div>
+      <div style="padding:0 16px 8px;font-size:11px;color:var(--ink-3)">El Espinillo · Admin v1.0</div>
+    </aside>
+
+    <main class="main" id="main">
+      <div style="padding:60px;text-align:center;color:var(--ink-3)">Cargando...</div>
+    </main>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:3000/api';
+let currentPage = 'dashboard';
+
+async function get(u){const r=await fetch(API+u);return r.json()}
+async function post(u,b){const r=await fetch(API+u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return r.json()}
+async function put(u,b){const r=await fetch(API+u,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return r.json()}
+async function del(u){const r=await fetch(API+u,{method:'DELETE'});return r.json()}
+
+function toast(msg,err){const t=document.createElement('div');t.className='toast'+(err?' err':'');t.textContent=(err?'✕ ':'✓ ')+msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200)}
+
+async function doLogin(){
+  const u=document.getElementById('l-user').value;
+  const p=document.getElementById('l-pass').value;
+  if(!u||!p){document.getElementById('login-err').style.display='block';return}
+  const res=await post('/admin/login',{usuario:u,password:p});
+  if(res.ok){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-screen').style.display='block';
+    nav('dashboard');
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+
+function doLogout(){
+  document.getElementById('admin-screen').style.display='none';
+  document.getElementById('login-screen').style.display='block';
+  document.getElementById('l-pass').value='';
+}
+
+function nav(page){
+  currentPage=page;
+  document.querySelectorAll('.nl').forEach(el=>el.classList.remove('on'));
+  const el=document.getElementById('nl-'+page);
+  if(el)el.classList.add('on');
+  render();
+}
+
+async function actualizarBadges(){
+  try{
+    const p=await get('/admin/pendientes');
+    document.getElementById('badge-pub').textContent=p.publicaciones.length||'0';
+    document.getElementById('badge-ev').textContent=p.eventos.length||'0';
+  }catch(e){}
+}
+
+async function pageDashboard(){
+  const s=await get('/admin/stats');
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Panel de administración</div>
+  <h1 class="hero-title">Dashboard <em>general.</em></h1>
+  <p class="hero-sub">Resumen del estado del barrio en tiempo real.</p>
+</div>
+<div class="stats-grid fade">
+  <div class="stat-card ${s.pubPendientes>0?'alert':''}">
+    <div class="stat-num">${s.pubPendientes}</div>
+    <div class="stat-lbl">Publicaciones pendientes</div>
+  </div>
+  <div class="stat-card ${s.eventoPendientes>0?'warn':''}">
+    <div class="stat-num">${s.eventoPendientes}</div>
+    <div class="stat-lbl">Eventos pendientes</div>
+  </div>
+  <div class="stat-card ${s.reclamosAbiertos>0?'warn':''}">
+    <div class="stat-num">${s.reclamosAbiertos}</div>
+    <div class="stat-lbl">Reclamos en curso</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">${s.visitas}</div>
+    <div class="stat-lbl">Visitas registradas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">${s.eventos}</div>
+    <div class="stat-lbl">Eventos activos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">${s.publicaciones}</div>
+    <div class="stat-lbl">Publicaciones activas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">${s.reclamos}</div>
+    <div class="stat-lbl">Reclamos totales</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">${s.vecinos}</div>
+    <div class="stat-lbl">Vecinos registrados</div>
+  </div>
+</div>
+${s.pubPendientes>0||s.eventoPendientes>0?`
+<div style="padding:14px 18px;background:var(--red-lt);border:1px solid #f5c0ba;border-radius:10px;font-size:13px;color:var(--red-soft);display:flex;align-items:center;gap:10px;margin-bottom:24px">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  Hay elementos pendientes de aprobación. 
+  ${s.pubPendientes>0?`<button class="btn btn-danger" onclick="nav('pub-pendientes')">Ver publicaciones →</button>`:''}
+  ${s.eventoPendientes>0?`<button class="btn btn-corn" onclick="nav('ev-pendientes')">Ver eventos →</button>`:''}
+</div>`:''}`;
+}
+
+async function pagePubPendientes(){
+  const p=await get('/admin/pendientes');
+  const pubs=p.publicaciones;
+  const cats={venta:'En venta',servicio:'Servicio',donacion:'Donación'};
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Marketplace</div>
+  <h1 class="hero-title">Publicaciones <em>pendientes.</em></h1>
+  <p class="hero-sub">Aprobá o rechazá las publicaciones enviadas por vecinos.</p>
+</div>
+${pubs.length===0?`<div class="empty fade">✓ No hay publicaciones pendientes de aprobación.</div>`:`
+<table class="tbl fade">
+  <thead><tr>
+    <th>Publicación</th><th>Vecino</th><th>Categoría</th><th>Precio</th><th>Acciones</th>
+  </tr></thead>
+  <tbody>
+  ${pubs.map(p=>`
+  <tr id="pub-row-${p.id}">
+    <td>
+      <div style="font-size:13.5px;font-weight:500;color:var(--ink);margin-bottom:4px">${p.titulo}</div>
+      <div style="font-size:12px;color:var(--ink-3);line-height:1.5">${p.descripcion}</div>
+    </td>
+    <td><div style="font-size:13px;font-weight:500">${p.autor}</div><div style="font-size:12px;color:var(--ink-3)">Lote ${p.lote}</div></td>
+    <td><span class="chip chip-gray">${cats[p.categoria]||p.categoria}</span></td>
+    <td style="font-size:13.5px;font-weight:500">${p.precio?'$'+Number(p.precio).toLocaleString('es-AR'):'Gratis'}</td>
+    <td>
+      <div class="btns">
+        <button class="btn btn-primary" onclick="aprobarPub(${p.id})">✓ Aprobar</button>
+        <button class="btn btn-danger" onclick="rechazarPub(${p.id})">✕ Rechazar</button>
+      </div>
+    </td>
+  </tr>`).join('')}
+  </tbody>
+</table>`}`;
+}
+
+async function aprobarPub(id){
+  await put('/publicaciones/'+id+'/estado',{estado:'aprobada'});
+  document.getElementById('pub-row-'+id)?.remove();
+  toast('Publicación aprobada ✓');
+  actualizarBadges();
+  const rows=document.querySelectorAll('#pub-row-'+id);
+  if(!rows.length) document.querySelector('.tbl')?.replaceWith(Object.assign(document.createElement('div'),{className:'empty',textContent:'✓ No hay publicaciones pendientes.'}));
+}
+async function rechazarPub(id){
+  await put('/publicaciones/'+id+'/estado',{estado:'rechazada'});
+  document.getElementById('pub-row-'+id)?.remove();
+  toast('Publicación rechazada.');
+  actualizarBadges();
+}
+
+async function pageEvPendientes(){
+  const p=await get('/admin/pendientes');
+  const evs=p.eventos;
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Agenda</div>
+  <h1 class="hero-title">Eventos <em>pendientes.</em></h1>
+  <p class="hero-sub">Aprobá o rechazá los eventos propuestos por vecinos.</p>
+</div>
+${evs.length===0?`<div class="empty fade">✓ No hay eventos pendientes de aprobación.</div>`:`
+<table class="tbl fade">
+  <thead><tr>
+    <th>Evento</th><th>Fecha</th><th>Lugar</th><th>Categoría</th><th>Acciones</th>
+  </tr></thead>
+  <tbody>
+  ${evs.map(e=>`
+  <tr id="ev-row-${e.id}">
+    <td>
+      <div style="font-size:13.5px;font-weight:500;color:var(--ink);margin-bottom:4px">${e.titulo}</div>
+      <div style="font-size:12px;color:var(--ink-3);line-height:1.5">${e.descripcion||''}</div>
+    </td>
+    <td><div style="font-size:13px;font-weight:500">${e.fecha}</div><div style="font-size:12px;color:var(--ink-3)">${e.hora_inicio||''}${e.hora_fin?' – '+e.hora_fin:''}</div></td>
+    <td style="font-size:13px;color:var(--ink-2)">${e.lugar||'—'}</td>
+    <td><span class="chip chip-gray">${e.categoria}</span></td>
+    <td>
+      <div class="btns">
+        <button class="btn btn-primary" onclick="aprobarEv(${e.id})">✓ Aprobar</button>
+        <button class="btn btn-danger" onclick="rechazarEv(${e.id})">✕ Rechazar</button>
+      </div>
+    </td>
+  </tr>`).join('')}
+  </tbody>
+</table>`}`;
+}
+
+async function aprobarEv(id){
+  await put('/admin/eventos/'+id+'/aprobar',{});
+  document.getElementById('ev-row-'+id)?.remove();
+  toast('Evento aprobado ✓');
+  actualizarBadges();
+}
+async function rechazarEv(id){
+  await del('/admin/eventos/'+id);
+  document.getElementById('ev-row-'+id)?.remove();
+  toast('Evento rechazado.');
+  actualizarBadges();
+}
+
+async function pageReclamos(){
+  const reclamos=await get('/admin/reclamos');
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Administración</div>
+  <h1 class="hero-title">Reclamos <em>del barrio.</em></h1>
+  <p class="hero-sub">Gestioná el estado de cada reclamo.</p>
+</div>
+<div class="ftabs fade" id="rec-tabs">
+  ${[['todos','Todos'],['curso','En curso'],['resueltos','Resueltos']].map(([k,l],i)=>`<button class="ftab${i===0?' on':''}" onclick="filterRec(this,'${k}')">${l}</button>`).join('')}
+</div>
+<table class="tbl fade">
+  <thead><tr><th>#</th><th>Lote</th><th>Fecha</th><th>Reclamo</th><th>Área</th><th>Estado</th><th>Acción</th></tr></thead>
+  <tbody>
+  ${reclamos.map(r=>`
+  <tr class="rec-row" data-estado="${r.estado}">
+    <td style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink-3)">#${String(r.id).padStart(3,'0')}</td>
+    <td style="font-weight:500">Lote ${r.lote}</td>
+    <td style="font-size:12.5px;color:var(--ink-3)">${r.fecha}<br>${r.hora}</td>
+    <td><div style="font-weight:500;margin-bottom:3px">${r.titulo}</div><div style="font-size:12px;color:var(--ink-3)">${r.detalle}</div></td>
+    <td style="font-size:12.5px;color:var(--ink-3)">${r.area}</td>
+    <td><span class="chip ${r.estado==='En curso'?'chip-corn':r.estado==='Resuelto'?'chip-olive':'chip-gray'}">${r.estado}</span></td>
+    <td>
+      <select onchange="cambiarEstadoReclamo(${r.id},this.value)" style="padding:5px 8px;border:1px solid var(--rule);border-radius:7px;font-size:12px;color:var(--ink);background:var(--white);cursor:pointer">
+        <option ${r.estado==='En curso'?'selected':''}>En curso</option>
+        <option ${r.estado==='Resuelto'?'selected':''}>Resuelto</option>
+        <option ${r.estado==='Cerrado'?'selected':''}>Cerrado</option>
+      </select>
+    </td>
+  </tr>`).join('')}
+  </tbody>
+</table>`;
+}
+
+function filterRec(btn,k){
+  document.querySelectorAll('#rec-tabs .ftab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.rec-row').forEach(r=>{
+    const show=k==='todos'||(k==='curso'&&r.dataset.estado==='En curso')||(k==='resueltos'&&r.dataset.estado==='Resuelto');
+    r.style.display=show?'':'none';
+  });
+}
+
+async function cambiarEstadoReclamo(id,estado){
+  await put('/admin/reclamos/'+id,{estado});
+  toast('Estado actualizado a "'+estado+'" ✓');
+}
+
+async function pageVisitas(){
+  const visitas=await get('/admin/visitas');
+  const prox=visitas.filter(v=>v.estado==='proximas');
+  const pas=visitas.filter(v=>v.estado==='pasadas');
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Comunidad</div>
+  <h1 class="hero-title">Visitas <em>autorizadas.</em></h1>
+  <p class="hero-sub">Registro completo de accesos al barrio.</p>
+</div>
+<div style="display:flex;gap:16px;margin-bottom:28px" class="fade">
+  <div style="background:var(--off);border-radius:10px;padding:16px 20px;flex:1"><div style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--ink)">${prox.length}</div><div style="font-size:12.5px;color:var(--ink-3)">Próximas</div></div>
+  <div style="background:var(--off);border-radius:10px;padding:16px 20px;flex:1"><div style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--ink)">${pas.length}</div><div style="font-size:12.5px;color:var(--ink-3)">Pasadas</div></div>
+  <div style="background:var(--off);border-radius:10px;padding:16px 20px;flex:1"><div style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--ink)">${visitas.length}</div><div style="font-size:12.5px;color:var(--ink-3)">Total</div></div>
+</div>
+<table class="tbl fade">
+  <thead><tr><th>Visitante</th><th>Relación</th><th>Lote</th><th>Fecha</th><th>Tipo</th><th>Estado</th></tr></thead>
+  <tbody>
+  ${visitas.map(v=>`
+  <tr>
+    <td><div style="font-weight:500">${v.nombre}</div><div style="font-size:12px;color:var(--ink-3)">${v.dni?'DNI '+v.dni:''}</div></td>
+    <td style="font-size:13px;color:var(--ink-2)">${v.rel}</td>
+    <td style="font-weight:500">Lote ${v.lote||'—'}</td>
+    <td><div style="font-size:13px">${v.fecha||'—'}</div><div style="font-size:12px;color:var(--ink-3)">${v.hora||''}</div></td>
+    <td><span class="chip ${v.tipo==='Permanente'?'chip-red':v.tipo==='Día completo'?'chip-corn':'chip-olive'}">${v.tipo}</span></td>
+    <td><span class="chip ${v.estado==='proximas'?'chip-corn':'chip-gray'}">${v.estado==='proximas'?'Próxima':'Pasada'}</span></td>
+  </tr>`).join('')}
+  </tbody>
+</table>`;
+}
+
+async function pageEventosTodos(){
+  const eventos=await get('/admin/eventos');
+  const cats={reunion:'Reunión',deportivo:'Deportivo',social:'Social',mantenimiento:'Mantenimiento',actividad:'Actividad'};
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Agenda</div>
+  <h1 class="hero-title">Todos los <em>eventos.</em></h1>
+  <p class="hero-sub">Gestión completa de la agenda del barrio.</p>
+</div>
+<div style="text-align:right;margin-bottom:16px">
+  <button class="btn btn-primary" onclick="nav('nuevo-evento')">+ Crear evento</button>
+</div>
+<table class="tbl fade">
+  <thead><tr><th>Evento</th><th>Fecha</th><th>Categoría</th><th>Estado</th><th>Asistentes</th><th>Acción</th></tr></thead>
+  <tbody>
+  ${eventos.map(e=>`
+  <tr>
+    <td><div style="font-weight:500;margin-bottom:3px">${e.titulo}</div><div style="font-size:12px;color:var(--ink-3)">${e.lugar||'—'}</div></td>
+    <td><div style="font-size:13px">${e.fecha}</div><div style="font-size:12px;color:var(--ink-3)">${e.hora_inicio||''}${e.hora_fin?' – '+e.hora_fin:''}</div></td>
+    <td><span class="chip chip-gray">${cats[e.categoria]||e.categoria}</span></td>
+    <td><span class="chip ${e.aprobado?'chip-olive':'chip-corn'}">${e.aprobado?'Aprobado':'Pendiente'}</span></td>
+    <td style="font-size:13px;text-align:left">${e.asistentes||0}</td>
+    <td>
+      <div class="btns">
+        ${!e.aprobado?`<button class="btn btn-primary" onclick="aprobarEvAdmin(${e.id})">✓ Aprobar</button>`:''}
+        <button class="btn btn-danger" onclick="eliminarEvAdmin(${e.id})">Eliminar</button>
+      </div>
+    </td>
+  </tr>`).join('')}
+  </tbody>
+</table>`;
+}
+
+async function aprobarEvAdmin(id){
+  await put('/admin/eventos/'+id+'/aprobar',{});
+  toast('Evento aprobado ✓');
+  nav('eventos-todos');
+}
+async function eliminarEvAdmin(id){
+  if(!confirm('¿Eliminar este evento? También se borrarán las asistencias.'))return;
+  await del('/admin/eventos/'+id);
+  toast('Evento eliminado.');
+  nav('eventos-todos');
+}
+
+function pageNuevoEvento(){
+  return`
+<div class="hero fade">
+  <div class="hero-eyebrow">Agenda</div>
+  <h1 class="hero-title">Crear <em>evento.</em></h1>
+  <p class="hero-sub">Los eventos creados por administración se publican de inmediato.</p>
+</div>
+<div class="form-panel fade">
+  <div class="form-grid">
+    <div class="span2"><label class="field-label">Título del evento</label><input type="text" id="ne-titulo" placeholder="Ej: Reunión de consorcio, Torneo de golf..."></div>
+    <div class="span2"><label class="field-label">Descripción</label><textarea id="ne-desc" rows="3" placeholder="Detallá el evento..."></textarea></div>
+    <div><label class="field-label">Categoría</label>
+      <select id="ne-cat">
+        <option value="reunion">Reunión</option>
+        <option value="deportivo">Deportivo</option>
+        <option value="social">Social</option>
+        <option value="mantenimiento">Mantenimiento</option>
+        <option value="actividad">Actividad</option>
+      </select>
+    </div>
+    <div><label class="field-label">Fecha</label><input type="date" id="ne-fecha"></div>
+    <div><label class="field-label">Hora inicio</label><input type="time" id="ne-inicio"></div>
+    <div><label class="field-label">Hora fin</label><input type="time" id="ne-fin"></div>
+    <div><label class="field-label">Lugar</label><input type="text" id="ne-lugar" placeholder="Ej: SUM, Canchas de tenis..."></div>
+    <div><label class="field-label">Máx. asistentes (opcional)</label><input type="number" id="ne-max" placeholder="Sin límite"></div>
+  </div>
+  <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--rule)">
+    <button class="btn btn-primary" onclick="crearEvento()">Publicar evento</button>
+    <button class="btn btn-ghost" onclick="nav('eventos-todos')">Cancelar</button>
+  </div>
+</div>`;
+}
+
+async function crearEvento(){
+  const titulo=document.getElementById('ne-titulo')?.value||'';
+  const fecha=document.getElementById('ne-fecha')?.value||'';
+  const cat=document.getElementById('ne-cat')?.value||'';
+  if(!titulo||!fecha){toast('Completá título y fecha.',true);return}
+  const res=await post('/eventos',{
+    titulo,
+    descripcion:document.getElementById('ne-desc')?.value||'',
+    categoria:cat,
+    fecha,
+    hora_inicio:document.getElementById('ne-inicio')?.value||'',
+    hora_fin:document.getElementById('ne-fin')?.value||'',
+    lugar:document.getElementById('ne-lugar')?.value||'',
+    max_asistentes:document.getElementById('ne-max')?.value||null,
+    creado_por:'administracion'
+  });
+  if(res.ok){toast('Evento publicado correctamente ✓');nav('eventos-todos')}
+  else{toast('Error al crear el evento.',true)}
+}
+
+async function render(){
+  const main=document.getElementById('main');
+  main.innerHTML='<div style="padding:60px;text-align:center;color:var(--ink-3)">Cargando...</div>';
+  const pages={
+    dashboard:pageDashboard,
+    'pub-pendientes':pagePubPendientes,
+    'ev-pendientes':pageEvPendientes,
+    reclamos:pageReclamos,
+    visitas:pageVisitas,
+    'eventos-todos':pageEventosTodos,
+    'nuevo-evento':pageNuevoEvento,
+  };
+  const fn=pages[currentPage];
+  if(fn){const html=await fn();main.innerHTML=html}
+  main.scrollTop=0;
+  document.querySelectorAll('.nl').forEach(el=>el.classList.remove('on'));
+  const active=document.getElementById('nl-'+currentPage);
+  if(active)active.classList.add('on');
+  await actualizarBadges();
+}
+
+document.getElementById('l-user').focus();
+</script>
+</body>
+</html>
