@@ -3,12 +3,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const JWT_SECRET = 'espinillo-secret-2026-xK9mP';
-const Database = require('better-sqlite3');
+//const Database = require('better-sqlite3');
 const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const db = new Database('panel.db');
+//const db = new Database('panel.db');
 
 app.use(cors());
 app.use(express.json());
