@@ -19,15 +19,16 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ─── CREAR TABLAS ───
-db.exec(`
-  CREATE TABLE IF NOT EXISTS usuario (
+// 
+─── CREAR TABLAS ───
+//db.exec(`
+  //CREATE TABLE IF NOT EXISTS usuario (
     id INTEGER PRIMARY KEY,
     nombre TEXT NOT NULL,
     lote TEXT NOT NULL,
     email TEXT NOT NULL,
     telefono TEXT NOT NULL
-  );
+ // );
 
   CREATE TABLE IF NOT EXISTS reclamos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -111,8 +112,8 @@ if (!votacionesExisten) {
   const ins = db.prepare('INSERT INTO votaciones (id, num, tipo, titulo, desc, abre, cierra, dias_restantes, socios, estado, opciones, max_candidatos, candidatos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
   ins.run('v01','01','Aprobación','Presupuesto anual 2026','Aprobación del presupuesto de gastos e inversiones para el período 2026. Incluye obras de iluminación, poda y refacción del SUM.','1 mar 2026','20 mar 2026',4,28,'activas',JSON.stringify(['Apruebo','Rechazo','Me abstengo']),null,null);
   ins.run('v02','02','Elección','Elección de la nueva Comisión Directiva','Elegí hasta 3 candidatos para integrar la Comisión Directiva del período 2026–2028.','15 feb 2026','7 mar 2026',19,28,'activas',null,3,JSON.stringify([{id:'c1',i:'MA',n:'María',c:'#d4a0a0'},{id:'c2',i:'LA',n:'Laura',c:'#a0b8d4'},{id:'c3',i:'CR',n:'Carolina',c:'#a0c4a8'},{id:'c4',i:'VE',n:'Verónica',c:'#c4a8d4'},{id:'c5',i:'AN',n:'Andrea',c:'#d4c4a0'},{id:'c6',i:'CA',n:'Carlos',c:'#b8d4b0'},{id:'c7',i:'MI',n:'Miguel',c:'#d4b8a0'},{id:'c8',i:'PA',n:'Pablo',c:'#a8c0d8'},{id:'c9',i:'DA',n:'Daniel',c:'#c8b8d8'},{id:'c10',i:'JU',n:'Juan',c:'#c8d4a8'}]));
-  db.prepare('INSERT INTO votaciones (id, num, tipo, titulo, desc, abre, cierra, dias_abre, socios, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run('v03','03','Infraestructura','Ampliación del estacionamiento sector B','Se votará si ampliar 40 plazas adicionales en el sector B del estacionamiento.','1 abr 2026','15 abr 2026',16,28,'proximas');
-  db.prepare('INSERT INTO votaciones (id, num, tipo, titulo, desc, cerro, socios, estado, resultados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').run('v04','04','Servicios','¿Renovamos el servicio de seguridad nocturna?','Votación sobre la continuidad del contrato con la empresa de seguridad nocturna actual.','7 mar 2026',28,'cerradas',JSON.stringify([{l:'Renovar',p:71,f:'rf-olive'},{l:'Nueva empresa',p:21,f:'rf-corn'},{l:'Abstención',p:8,f:'rf-rule'}]));
+//  db.prepare('INSERT INTO votaciones (id, num, tipo, titulo, desc, abre, cierra, dias_abre, socios, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run('v03','03','Infraestructura','Ampliación del estacionamiento sector B','Se votará si ampliar 40 plazas adicionales en el sector B del estacionamiento.','1 abr 2026','15 abr 2026',16,28,'proximas');
+  //db.prepare('INSERT INTO votaciones (id, num, tipo, titulo, desc, cerro, socios, estado, resultados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').run('v04','04','Servicios','¿Renovamos el servicio de seguridad nocturna?','Votación sobre la continuidad del contrato con la empresa de seguridad nocturna actual.','7 mar 2026',28,'cerradas',JSON.stringify([{l:'Renovar',p:71,f:'rf-olive'},{l:'Nueva empresa',p:21,f:'rf-corn'},{l:'Abstención',p:8,f:'rf-rule'}]));
 }
 
 // ─── RUTAS API ───
@@ -227,7 +228,7 @@ app.listen(PORT, () => {
 });
 
 // ─── AGENDA ───
-db.exec(`
+//db.exec(`
   CREATE TABLE IF NOT EXISTS eventos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     titulo TEXT NOT NULL,
@@ -287,10 +288,10 @@ app.post('/api/eventos', (req, res) => {
 // POST confirmar asistencia
 app.post('/api/eventos/:id/asistir', (req, res) => {
   try {
-    db.prepare('INSERT INTO asistencias (evento_id, usuario_id, nombre) VALUES (?, 1, ?)').run(req.params.id, req.body.nombre || 'Martín García');
+  //  db.prepare('INSERT INTO asistencias (evento_id, usuario_id, nombre) VALUES (?, 1, ?)').run(req.params.id, req.body.nombre || 'Martín García');
     res.json({ ok: true, accion: 'confirmado' });
   } catch {
-    db.prepare('DELETE FROM asistencias WHERE evento_id = ? AND usuario_id = 1').run(req.params.id);
+   // db.prepare('DELETE FROM asistencias WHERE evento_id = ? AND usuario_id = 1').run(req.params.id);
     res.json({ ok: true, accion: 'cancelado' });
   }
 });
@@ -303,7 +304,7 @@ app.delete('/api/eventos/:id', (req, res) => {
 });
 
 // ─── MARKETPLACE ───
-db.exec(`
+//db.exec(`
   CREATE TABLE IF NOT EXISTS publicaciones (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     titulo TEXT NOT NULL,
@@ -439,14 +440,14 @@ app.delete('/api/admin/eventos/:id', (req, res) => {
 });
 
 app.put('/api/admin/reclamos/:id', (req, res) => {
-  db.prepare('UPDATE reclamos SET estado=? WHERE id=?').run(req.body.estado, req.params.id);
+  //db.prepare('UPDATE reclamos SET estado=? WHERE id=?').run(req.body.estado, req.params.id);
   res.json({ ok: true });
 });
 
 // ─── ADMIN ───
 
 // ─── SERVICIOS ───
-db.exec(`
+//db.exec(`
   CREATE TABLE IF NOT EXISTS proveedores (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
@@ -546,7 +547,7 @@ app.post('/api/reservas', (req, res) => {
 });
 
 app.delete('/api/reservas/:id', (req, res) => {
-  db.prepare('UPDATE reservas SET estado=? WHERE id=? AND usuario_id=1').run('cancelada', req.params.id);
+  //db.prepare('UPDATE reservas SET estado=? WHERE id=? AND usuario_id=1').run('cancelada', req.params.id);
   res.json({ ok: true });
 });
 
@@ -576,7 +577,7 @@ app.get('/api/admin/reservas', (req, res) => {
 });
 
 // ─── AUTH / VECINOS ───
-db.exec(`
+//db.exec(`
   CREATE TABLE IF NOT EXISTS vecinos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
@@ -654,7 +655,7 @@ app.post('/api/admin/codigos', (req, res) => {
 });
 
 app.delete('/api/admin/vecinos/:id', (req, res) => {
-  db.prepare("UPDATE vecinos SET estado='inactivo' WHERE id=?").run(req.params.id);
+ // db.prepare("UPDATE vecinos SET estado='inactivo' WHERE id=?").run(req.params.id);
   res.json({ ok: true });
 });
 
@@ -691,7 +692,7 @@ app.post('/api/auth/registro-seguro', async (req, res) => {
   if (existe) return res.status(400).json({ error: 'Ya existe un vecino con ese DNI.' });
   const hash = await bcrypt.hash(password, 10);
   const info = db.prepare('INSERT INTO vecinos (nombre, apellido, dni, password, lote, email, telefono) VALUES (?, ?, ?, ?, ?, ?, ?)').run(nombre, apellido, dni, hash, codigo.lote, email||'', telefono||'');
-  db.prepare('UPDATE codigos_lote SET usado=1, vecino_id=? WHERE id=?').run(info.lastInsertRowid, codigo.id);
+ // db.prepare('UPDATE codigos_lote SET usado=1, vecino_id=? WHERE id=?').run(info.lastInsertRowid, codigo.id);
   res.json({ ok: true, lote: codigo.lote });
 });
 
@@ -717,6 +718,6 @@ app.get('/api/auth/perfil', verificarToken, (req, res) => {
 
 app.put('/api/auth/perfil', verificarToken, (req, res) => {
   const { nombre, apellido, email, telefono } = req.body;
-  db.prepare('UPDATE vecinos SET nombre=?, apellido=?, email=?, telefono=? WHERE id=?').run(nombre, apellido, email, telefono, req.vecino.id);
+ // db.prepare('UPDATE vecinos SET nombre=?, apellido=?, email=?, telefono=? WHERE id=?').run(nombre, apellido, email, telefono, req.vecino.id);
   res.json({ ok: true });
 });
