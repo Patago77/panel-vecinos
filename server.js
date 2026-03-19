@@ -19,16 +19,18 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 
-─── CREAR TABLAS ───
-//db.exec(`
-  //CREATE TABLE IF NOT EXISTS usuario (
+// ─── CREAR TABLAS ───
+/*
+db.exec(`
+  CREATE TABLE IF NOT EXISTS usuario (
     id INTEGER PRIMARY KEY,
     nombre TEXT NOT NULL,
     lote TEXT NOT NULL,
     email TEXT NOT NULL,
     telefono TEXT NOT NULL
- // );
+  );
+`);
+*/
 
   CREATE TABLE IF NOT EXISTS reclamos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
