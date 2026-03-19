@@ -231,7 +231,7 @@ app.listen(PORT, () => {
 });
 
 // ─── AGENDA ───
-//db.exec(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS eventos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     titulo TEXT NOT NULL,
@@ -307,7 +307,7 @@ app.delete('/api/eventos/:id', (req, res) => {
 });
 
 // ─── MARKETPLACE ───
-//db.exec(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS publicaciones (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     titulo TEXT NOT NULL,
@@ -450,7 +450,7 @@ app.put('/api/admin/reclamos/:id', (req, res) => {
 // ─── ADMIN ───
 
 // ─── SERVICIOS ───
-//db.exec(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS proveedores (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
@@ -580,7 +580,7 @@ app.get('/api/admin/reservas', (req, res) => {
 });
 
 // ─── AUTH / VECINOS ───
-//db.exec(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS vecinos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
