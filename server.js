@@ -32,6 +32,7 @@ db.exec(`
 `);
 */
 
+db.exec(`
   CREATE TABLE IF NOT EXISTS reclamos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     lote TEXT NOT NULL,
