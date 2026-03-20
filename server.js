@@ -223,11 +223,9 @@ app.post("/api/reclamos", (req, res) => {
   });
 });
 // ─── INICIAR SERVIDOR ───
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📁 Base de datos: panel.db`);
-  console.log(`🛑 Para detener: Ctrl + C`);
+const PORT = 3011;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Servidor corriendo en http://0.0.0.0:${PORT}`);
 });
 
 // ─── AGENDA ───

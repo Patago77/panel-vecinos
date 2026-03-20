@@ -174,7 +174,7 @@ button,input,select,textarea{font-family:inherit}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .fade{animation:fadeUp .4s ease both}
-@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0;padding:24px 20px 48px}.hero-title{font-size:30px}.col-layout{grid-template-columns:1fr;gap:40px}.tbl-header{display:none}.rec-row{grid-template-columns:1fr;gap:6px}.vrow{grid-template-columns:44px 1fr}.form-grid{grid-template-columns:1fr}.field.span2{grid-column:span 1}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0;padding:24px 16px 80px}.hero-title{font-size:28px}.col-layout{grid-template-columns:1fr;gap:40px}.tbl-header{display:none}.rec-row{grid-template-columns:1fr;gap:6px}.vrow{grid-template-columns:44px 1fr}.form-grid{grid-template-columns:1fr}.field.span2{grid-column:span 1}.hdr{padding:0 12px;gap:8px}.hdr-wordmark{font-size:14px;white-space:nowrap}.hdr-lote{font-size:11px}.hdr-nombre{display:none}.hdr-avatar{width:28px;height:28px;font-size:10px}body{overflow-x:hidden}.layout{overflow-x:hidden}}
 </style>
 </head>
 <body>
@@ -217,7 +217,7 @@ button,input,select,textarea{font-family:inherit}
 <main class="main" id="main"><div class="loading">Cargando panel...</div></main>
 </div>
 <script>
-const API='http://localhost:3000/api';
+const API='/api';
 let usuario={};
 let currentPage='inicio';
 const selOpts={};
@@ -967,7 +967,7 @@ async function confirmarReserva() {
 
 async function cancelarReserva(id) {
   if (!confirm('¿Cancelar esta reserva?')) return;
-  const res = await fetch('http://localhost:3000/api/reservas/'+id, { method: 'DELETE' });
+  const res = await fetch('/api/reservas/'+id, { method: 'DELETE' });
   if (res.ok) { toast('Reserva cancelada.'); nav('servicios'); }
 }
 </script>
